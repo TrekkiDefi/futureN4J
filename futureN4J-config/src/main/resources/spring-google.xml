@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+    	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder
+            ignore-unresolvable="true" location="classpath:google/client.properties" />
+
+    <bean id="googleConfigration" class="com.github.ittalks.commons.sdk.google.client.common.config.Configration">
+        <property name="dataStoreDir" value="${data.store.dir}"/>
+        <property name="clientSecrets" value="${client.secrets}"/>
+        <property name="oauth2RedirectUrl" value="${oauth2.redirect.url}"/>
+        <property name="oauth2Callback" value="${oauth2.callback}"/>
+    </bean>
+</beans>
