@@ -36,11 +36,11 @@
 
     <jaxws:client id="helloService"
                   address="${ws.server.base.url}/hello"
-                  serviceClass="IHelloWebService" />
+                  serviceClass="com.github.ittalks.commons.webservice.IHelloWebService" />
 
     <jaxrs-client:client id="userService"
                          address="${ws.server.rest.url}"
-                         serviceClass="IUserWebServcie">
+                         serviceClass="com.github.ittalks.commons.webservice.IUserWebServcie">
         <jaxrs-client:providers>
             <ref bean="jacksonProvider" />
         </jaxrs-client:providers>

@@ -78,7 +78,7 @@
         </jaxrs:languageMappings>
         <jaxrs:providers>
             <ref bean="jacksonProvider" />
-            <bean class="CxfExceptionMapper" />
+            <bean class="com.github.ittalks.commons.webservice.exception.CxfExceptionMapper" />
         </jaxrs:providers>
     </jaxrs:server>
 </beans>
