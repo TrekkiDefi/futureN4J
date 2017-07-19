@@ -1,7 +1,5 @@
 package com.github.ittalks.commons.v2.retrofit;
 
-import com.github.ittalks.commons.v2.retrofit.interfaces.Error;
-import com.github.ittalks.commons.v2.retrofit.interfaces.*;
 import com.github.ittalks.commons.v2.retrofit.utils.WriteFileUtil;
 import okhttp3.ResponseBody;
 import org.slf4j.Logger;
@@ -17,29 +15,31 @@ import rx.schedulers.Schedulers;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.github.ittalks.commons.v2.retrofit.HttpUtil.putCall;
+import static com.github.ittalks.commons.v2.retrofit.HttpUtil.removeCall;
+
 /**
- * Created by 刘春龙 on 2017/6/7.
+ * Created by 刘春龙 on 2017/7/19.
  */
 public class HttpRequest {
 
-    protected static class Builder {
-
+    public static class Builder {
         private static final Logger logger = LoggerFactory.getLogger(Builder.class);
 
         /**
-         * 请求“公共参数”
+         * 请求"公共参数"
          */
         private RetrofitHttpService mService;
-        private String mVersionApi;//API版本，eg：https://accounts.google.com/o/oauth2/v2/auth，其中的v2
-        private ParamsInterceptor mParamsInterceptor;//自定义参数拦截器
-        private HeadersInterceptor mHeadersInterceptor;//自定义请求头拦截器
+        private String mVersionApi;// API版本，eg：https://accounts.google.com/o/oauth2/v2/auth，其中的v2
+        private ParamsInterceptor mParamsInterceptor;// 自定义参数拦截器
+        private HeadersInterceptor mHeadersInterceptor;// 自定义请求头拦截器
 
         /**
-         * 请求“私有参数”
+         * 请求"私有参数"
          */
-        Object tag;//用于取消请求的请求标记
-        boolean addVersion = false;//是否追加接口版本号
-        String path;//下载文件保存路径
+        Object tag;// 用于取消请求的请求标记
+        boolean hasVersion = false;// 是否追加接口版本号，即mVersionApi
+        String path;// 下载文件保存路径
 
         String url;
         Map<String, String> params = new HashMap<>();
@@ -52,30 +52,33 @@ public class HttpRequest {
         /**
          * 构造方法，使用{@link HttpClient}构造请求，并指定请求地址
          *
-         * @param httpClient
+         * @param httpClient HttpClient
          */
-        public Builder(HttpClient httpClient) {
-            this.setParams(httpClient, null);
+        public Builder(HttpClient httpClient, String url) {
+            this.initParams(httpClient, url);
         }
 
         /**
          * 构造方法，使用{@link HttpClient}构造请求
          *
-         * @param httpClient
+         * @param httpClient HttpClient
          */
-        public Builder(HttpClient httpClient, String url) {
-            this.setParams(httpClient, url);
+        public Builder(HttpClient httpClient) {
+            this.initParams(httpClient, null);
         }
 
-        private void setParams(HttpClient httpClient, String url) {
-            Assert.notNull(httpClient, "HttpClient has not be initialized");
+        private void initParams(HttpClient httpClient, String url) {
+            Assert.notNull(httpClient, "httpclient has not be initialized");
+
             this.mService = httpClient.getService();
             this.mVersionApi = httpClient.getVersionApi();
             this.mParamsInterceptor = httpClient.getParamsInterceptor();
             this.mHeadersInterceptor = httpClient.getHeadersInterceptor();
+
             this.url = url;
             this.params = new HashMap<>();
             this.headers = new HashMap<>();
+
             this.mErrorCallBack = c -> {
             };
             this.mSuccessCallBack = c -> {
@@ -88,60 +91,54 @@ public class HttpRequest {
             this.tag = tag;
             return this;
         }
-
         public HttpRequest.Builder Version() {
-            this.addVersion = true;
+            this.hasVersion = true;
             return this;
         }
-
+        public HttpRequest.Builder Path(String path) {
+            this.path = path;
+            return this;
+        }
         public HttpRequest.Builder Url(String url) {
             this.url = url;
             return this;
         }
-
         public HttpRequest.Builder Params(Map<String, String> params) {
             this.params.putAll(params);
             return this;
         }
-
-        public HttpRequest.Builder Params(String key, String value) {
+        public HttpRequest.Builder Param(String key, String value) {
             this.params.put(key, value);
             return this;
         }
-
         public HttpRequest.Builder Headers(Map<String, String> headers) {
             this.headers.putAll(headers);
             return this;
         }
-
-        public HttpRequest.Builder Headers(String key, String value) {
+        public HttpRequest.Builder Header(String key, String value) {
             this.headers.put(key, value);
             return this;
         }
-
         public HttpRequest.Builder CacheTime(String time) {
             this.headers.put("Cache-Time", time);
             return this;
         }
-
-        public HttpRequest.Builder savePath(String path) {
-            this.path = path;
+        public HttpRequest.Builder success(Success success) {
+            this.mSuccessCallBack = success;
             return this;
         }
-
         public HttpRequest.Builder Progress(Progress progress) {
             this.mProgressCallBack = progress;
             return this;
         }
-
         public HttpRequest.Builder Error(Error error) {
             this.mErrorCallBack = error;
             return this;
         }
 
-        public void get() {
-            Call<String> call = mService.get(checkHeaders(this.headers), checkUrl(this.url), checkParams(this.params));
-//            putCall(this.tag, this.url, call);
+        public void cGet() {
+            Call<String> call = mService.cGet(checkHeaders(this.headers), checkUrl(this.url), checkParams(this.params));
+            putCall(this.tag, this.url, call);
             call.enqueue(new Callback<String>() {
 
                 @Override
@@ -151,31 +148,31 @@ public class HttpRequest {
                     } else {
                         mErrorCallBack.Error(response.code(), response.message(), null);
                     }
-//                    if (tag != null)
-//                        removeCall(tag.toString() + url);
+                    if (tag != null)
+                        removeCall(tag.toString() + url);
                 }
 
                 @Override
                 public void onFailure(Call<String> call, Throwable throwable) {
                     if (call.isCanceled()) {
-                        logger.info("Request was cancelled");
+                        logger.info("request was cancelled");
                     } else {
                         mErrorCallBack.Error(500, throwable.getMessage(), throwable);
-//                        if (tag != null)
-//                            removeCall(tag.toString() + url);
+                        if (tag != null)
+                            removeCall(tag.toString() + url);
                     }
                 }
             });
         }
 
-        public void obGet() {
-            mService.obGet(checkHeaders(this.headers), checkUrl(this.url), checkParams(this.params))
+        public void oGet() {
+            mService.oGet(checkHeaders(this.headers), checkUrl(this.url), checkParams(this.params))
                     .observeOn(Schedulers.io())
                     .subscribe(new Subscriber<String>() {
 
                         @Override
                         public void onCompleted() {
-                            logger.info("Request was completed");
+                            logger.info("request was completed");
                         }
 
                         @Override
@@ -190,10 +187,9 @@ public class HttpRequest {
                     });
         }
 
-        public void post() {
-            Call<String> call = mService.post(checkHeaders(this.headers), checkUrl(this.url), checkParams(this.params));
-//            putCall(this.tag, this.url, call);
-
+        public void cPost() {
+            Call<String> call = mService.cPost(checkHeaders(this.headers), checkUrl(this.url), checkParams(this.params));
+            putCall(this.tag, this.url, call);
             call.enqueue(new Callback<String>() {
 
                 @Override
@@ -203,31 +199,31 @@ public class HttpRequest {
                     } else {
                         mErrorCallBack.Error(response.code(), response.message(), null);
                     }
-//                    if (tag != null)
-//                        removeCall(tag.toString() + url);
+                    if (tag != null)
+                        removeCall(tag.toString() + url);
                 }
 
                 @Override
                 public void onFailure(Call<String> call, Throwable throwable) {
                     if (call.isCanceled()) {
-                        logger.info("Request was cancelled");
+                        logger.info("request was cancelled");
                     } else {
                         mErrorCallBack.Error(500, throwable.getMessage(), throwable);
-//                        if (tag != null)
-//                            removeCall(tag.toString() + url);
+                        if (tag != null)
+                            removeCall(tag.toString() + url);
                     }
                 }
             });
         }
 
-        public void obPost() {
-            mService.obPost(checkHeaders(this.headers), checkUrl(this.url), checkParams(this.params))
+        public void oPost() {
+            mService.oPost(checkHeaders(this.headers), checkUrl(this.url), checkParams(this.params))
                     .observeOn(Schedulers.io())
                     .subscribe(new Subscriber<String>() {
 
                         @Override
                         public void onCompleted() {
-                            logger.info("Request was completed");
+                            logger.info("request was completed");
                         }
 
                         @Override
@@ -242,9 +238,9 @@ public class HttpRequest {
                     });
         }
 
-        public void download() {
-            Call<ResponseBody> call = mService.download(checkHeaders(this.headers), checkUrl(this.url), checkParams(this.params));
-//            putCall(this.tag, this.url, call);
+        public void cDownload() {
+            Call<ResponseBody> call = mService.cDownload(checkHeaders(this.headers), checkUrl(this.url), checkParams(this.params));
+            putCall(this.tag, this.url, call);
             Observable<ResponseBody> observable = Observable.create(subscriber -> {
                 call.enqueue(new Callback<ResponseBody>() {
 
@@ -255,18 +251,18 @@ public class HttpRequest {
                         } else {
                             mErrorCallBack.Error(response.code(), response.message(), null);
                         }
-//                        if (tag != null)
-//                            removeCall(tag.toString() + url);
+                        if (tag != null)
+                            removeCall(tag.toString() + url);
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable throwable) {
                         if (call.isCanceled()) {
-                            logger.info("Request was cancelled");
+                            logger.info("request was cancelled");
                         } else {
                             mErrorCallBack.Error(500, throwable.getMessage(), throwable);
-//                            if (tag != null)
-//                                removeCall(tag.toString() + url);
+                            if (tag != null)
+                                removeCall(tag.toString() + url);
                         }
                     }
                 });
@@ -278,7 +274,7 @@ public class HttpRequest {
         }
 
         public void obDownload() {
-            mService.obDownload(checkHeaders(this.headers), checkUrl(this.url), checkParams(this.params))
+            mService.oDownload(checkHeaders(this.headers), checkUrl(this.url), checkParams(this.params))
                     .observeOn(Schedulers.io())
                     .subscribe(body -> WriteFileUtil.writeFile(body, path, mProgressCallBack, mSuccessCallBack, mErrorCallBack), t -> {
                         mErrorCallBack.Error(t);
@@ -298,7 +294,7 @@ public class HttpRequest {
             if (mHeadersInterceptor != null) {
                 headers = mHeadersInterceptor.checkHeaders(headers);
             }
-            //retrofit的headers的值不能为null，此处做下校验，防止出错
+            // retrofit2的headers的值不能为null，此处做下校验，防止出错
             for (Map.Entry<String, String> entry : headers.entrySet()) {
                 if (entry.getValue() == null) {
                     headers.put(entry.getKey(), "");
@@ -308,31 +304,36 @@ public class HttpRequest {
         }
 
         /**
-         * url校验，如果设置了API版本号，则添加接口版本号
+         * url校验，如果设置了API接口版本号，则添加接口版本号
          *
-         * @param url
+         * @param url API接口版本号
          * @return
          */
         private String checkUrl(String url) {
-            Assert.notNull(url, "Relative URL can not be empty");
-            //因为baseUrl以"/"结束，故url必须保证不能以“/”开始
-            if (addVersion) {
+            Assert.notNull(url, "relative url can not be empty");
+            // 因为baseUrl以"/"结束，故url必须保证不能以"/"开始
+            if (hasVersion) {
                 url = url.startsWith("/") ? url : "/" + url;
-                Assert.notNull(mVersionApi, "Can not add VersionApi ,because of VersionApi is null");
+                Assert.notNull(mVersionApi, "can not add VersionApi ,because of VersionApi is null");
                 return mVersionApi + url;
             }
             url = url.startsWith("/") ? url.substring(1) : url;
             return url;
         }
 
-        public Map<String, String> checkParams(Map<String, String> params) {
+        /**
+         * 请求参数校验
+         * @param params 请求参数
+         * @return
+         */
+        private Map<String, String> checkParams(Map<String, String> params) {
             if (params == null) {
                 params = new HashMap<>();
             }
             if (mParamsInterceptor != null) {
                 params = mParamsInterceptor.checkParams(params);
             }
-            //retrofit的params的值不能为null，此处做下校验，防止出错
+            // retrofit2的params的值不能为null，此处做下校验，防止出错
             for (Map.Entry<String, String> entry : params.entrySet()) {
                 if (entry.getValue() == null) {
                     params.put(entry.getKey(), "");
