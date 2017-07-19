@@ -1,5 +1,8 @@
 package com.github.ittalks.commons.v2.retrofit.utils;
 
+import com.github.ittalks.commons.v2.retrofit.interfaces.Progress;
+import com.github.ittalks.commons.v2.retrofit.interfaces.Success;
+import com.github.ittalks.commons.v2.retrofit.interfaces.Error;
 import okhttp3.ResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

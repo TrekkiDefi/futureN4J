@@ -1,5 +1,10 @@
 package com.github.ittalks.commons.v2.retrofit;
 
+import com.github.ittalks.commons.v2.retrofit.interfaces.HeadersInterceptor;
+import com.github.ittalks.commons.v2.retrofit.interfaces.ParamsInterceptor;
+import com.github.ittalks.commons.v2.retrofit.interfaces.Progress;
+import com.github.ittalks.commons.v2.retrofit.interfaces.Success;
+import com.github.ittalks.commons.v2.retrofit.interfaces.Error;
 import com.github.ittalks.commons.v2.retrofit.utils.WriteFileUtil;
 import okhttp3.ResponseBody;
 import org.slf4j.Logger;
