@@ -15,6 +15,7 @@
             如果是no，则该XML文档不是独立的，表示可以引用外部的DTD规范文档。
     -->
 
+    <!-- 配置了component-scan，此处可以忽略 -->
     <context:annotation-config/>
     <!--
         启动注解驱动的Spring MVC功能，注册请求url和注解POJO类方法的映射

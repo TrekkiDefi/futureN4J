@@ -7,17 +7,17 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  *
  * 基于JWT的认证拦截器
  */
-public class SecurityInterceptorv2 extends HandlerInterceptorAdapter {
+public class SecurityInterceptor extends HandlerInterceptorAdapter {
 
     /*
     private static String signSecret = null;
     private static List<String> whiteList;//白名单
 
-    public SecurityInterceptorv2() throws IOException {
+    public SecurityInterceptor() throws IOException {
 
         super();
         Properties properties = new Properties();
-        properties.load(SecurityInterceptorv2.class.getClassLoader()
+        properties.load(SecurityInterceptor.class.getClassLoader()
                 .getResourceAsStream("signature/signature.properties"));
         signSecret = (String) properties.get("signSecret");
         if (signSecret.isEmpty()) {
@@ -29,7 +29,7 @@ public class SecurityInterceptorv2 extends HandlerInterceptorAdapter {
     public static List<String> getWhiteList() {
         Properties properties = new Properties();
         try {
-            properties.load(SecurityInterceptorv2.class.getClassLoader()
+            properties.load(SecurityInterceptor.class.getClassLoader()
                     .getResourceAsStream("common/verify.properties"));
             String whiteList = (String) properties.get("white_list");
             if (StringUtils.isEmpty(whiteList))

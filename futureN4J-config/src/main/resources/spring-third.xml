@@ -6,9 +6,6 @@
     	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:property-placeholder
-            ignore-unresolvable="true" location="classpath:google/client.properties" />
-
     <bean id="googleConfigration" class="com.github.ittalks.commons.sdk.google.client.common.config.Configration">
         <property name="dataStoreDir" value="${data.store.dir}"/>
         <property name="clientSecrets" value="${client.secrets}"/>

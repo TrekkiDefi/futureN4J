@@ -10,8 +10,6 @@
        http://www.springframework.org/schema/data/mongo
        http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
 
-    <context:property-placeholder
-            ignore-unresolvable="true" location="classpath:common/*.properties" />
     <!-- 数据源配置：阿里数据库连接池 -->
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
         <property name="driverClassName" value="${mysql.driverClassName}" />
@@ -24,5 +22,24 @@
         <property name="minIdle" value="${mysql.minIdle}" />
         <property name="maxWait" value="${mysql.maxWait}" />
         <property name="defaultAutoCommit" value="false" />
+    </bean>
+
+    <!-- PMF Bean -->
+    <bean id="pmf"
+          class="org.springframework.orm.jdo.LocalPersistenceManagerFactoryBean">
+        <property name="jdoProperties">
+            <map>
+                <entry key="javax.jdo.PersistenceManagerFactoryClass" value="org.datanucleus.api.jdo.JDOPersistenceManagerFactory"/>
+                <entry key="javax.jdo.option.ConnectionFactory" value-ref="dataSource"/>
+                <entry key="datanucleus.schema.autoCreateAll" value="true"/>
+            </map>
+        </property>
+    </bean>
+
+    <!-- Transaction Manager for PMF -->
+    <bean id="jdoTransactionManager" class="org.springframework.orm.jdo.JdoTransactionManager">
+        <property name="persistenceManagerFactory">
+            <ref bean="pmf"/>
+        </property>
     </bean>
 </beans>

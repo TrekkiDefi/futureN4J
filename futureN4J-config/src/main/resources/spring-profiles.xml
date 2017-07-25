@@ -14,10 +14,6 @@
     <!-- ************************************************************************************************* -->
     <!-- * 环境配置切换(在web.xml中的spring.profiles.default上启用) * -->
     <!-- ************************************************************************************************* -->
-    <context:property-placeholder
-            ignore-unresolvable="true" location="classpath:common/*.properties" />
-    <!-- ignore-unresolvable : 是否忽略解析不到的属性，如果不忽略，找不到将抛出异常 -->
-
     <!-- 开发环境 -->
     <beans profile="dev">
         <mongo:mongo id="mongo" host="${mongodb.host}" port="${mongodb.port}"/>
