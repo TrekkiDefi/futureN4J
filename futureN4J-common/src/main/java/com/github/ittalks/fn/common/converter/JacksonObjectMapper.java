@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 public class JacksonObjectMapper extends ObjectMapper {
     public JacksonObjectMapper() {
         this.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        this.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         this.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }

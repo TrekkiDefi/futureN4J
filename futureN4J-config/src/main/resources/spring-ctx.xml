@@ -7,12 +7,14 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <!-- 启动包扫描功能，以便注册带有@Controller等注解的类成为spring的bean -->
-    <context:component-scan base-package="com.github.ittalks" />
+    <!--
+        <context:component-scan base-package="com.github.ittalks" />
+    -->
 
     <!-- 公共配置文件-->
     <import resource="classpath:/spring-profiles.xml"/>
     <import resource="classpath:/spring-persist.xml"/>
-    <import resource="classpath:/spring-third.xml"/>
+    <import resource="classpath:/spring-t3.xml"/>
     <import resource="classpath:/spring-redis.xml"/>
     <import resource="classpath:/spring-quartz.xml"/>
     <import resource="classpath:/cxf-server.xml"/>

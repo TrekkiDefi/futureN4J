@@ -18,7 +18,7 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
         super();
         Properties properties = new Properties();
         properties.load(SecurityInterceptor.class.getClassLoader()
-                .getResourceAsStream("signature/signature.properties"));
+                .getResourceAsStream("common/signature.properties"));
         signSecret = (String) properties.get("signSecret");
         if (signSecret.isEmpty()) {
             throw new IOException("the signature can not be empty");

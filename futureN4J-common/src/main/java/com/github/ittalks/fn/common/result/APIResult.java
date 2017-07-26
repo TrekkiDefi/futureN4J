@@ -2,11 +2,13 @@ package com.github.ittalks.fn.common.result;
 
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Created by 刘春龙 on 2017/3/9.
  */
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class APIResult {
 
     private static final String defaultResult = "ok";

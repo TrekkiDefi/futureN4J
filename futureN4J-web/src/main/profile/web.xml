@@ -16,7 +16,7 @@
 
     <!--
         如果使用"AnnotationConfigWebApplicationContext"作为根应用上下文，
-        则这里指定的就不是*.xml，而是类（以",; \t\n"作为分隔符）
+        则这里指定的就不是*.xml，而是Java Config类（以",; \t\n"作为分隔符）
      -->
     <!--
     <context-param>
@@ -31,23 +31,17 @@
     </listener>
 
     <!-- 配置SpringMVC核心Servlet -->
+    <!--
     <servlet>
         <servlet-name>spring</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <init-param>
-            <param-name>contextClass</param-name>
-            <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
-        </init-param>
-        <init-param>
-            <param-name>contextConfigLocation</param-name>
-            <param-value>com.github.ittalks.fn.config.WebApplicationJavaConfig</param-value>
-        </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>spring</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+    -->
 
     <filter>
         <filter-name>characterEncodingFilter</filter-name>

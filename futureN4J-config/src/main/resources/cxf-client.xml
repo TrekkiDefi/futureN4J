@@ -32,11 +32,11 @@
     </http-conf:conduit>
 
     <jaxws:client id="helloService"
-                  address="${ws.server.base.url}/hello"
+                  address="http://localhost:9090/futureN4J/webservice/ws/hello"
                   serviceClass="com.github.ittalks.commons.webservice.IHelloWebService" />
 
     <jaxrs-client:client id="userService"
-                         address="${ws.server.rest.url}"
+                         address="http://localhost:9090/futureN4J/webservice/rest"
                          serviceClass="com.github.ittalks.commons.webservice.IUserWebServcie">
         <jaxrs-client:providers>
             <ref bean="jacksonProvider" />

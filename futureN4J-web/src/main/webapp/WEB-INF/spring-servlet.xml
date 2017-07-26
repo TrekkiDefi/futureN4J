@@ -16,27 +16,35 @@
     -->
 
     <!-- 配置了component-scan，此处可以忽略 -->
-    <context:annotation-config/>
+    <!--
+        <context:annotation-config/>
+    -->
     <!--
         启动注解驱动的Spring MVC功能，注册请求url和注解POJO类方法的映射
         注册了处理器映射器和处理器适配器 同时还有其他配置，如参数绑定
     -->
-    <bean id="jacksonObjectMapper" class="com.github.ittalks.fn.common.converter.JacksonObjectMapper" />
-    <mvc:annotation-driven>
-        <mvc:message-converters register-defaults="true">
-            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
-                <constructor-arg value="UTF-8"/>
-                <property name="writeAcceptCharset" value="false"/>
-            </bean>
-            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-                <property name="objectMapper" ref="jacksonObjectMapper" />
-            </bean>
-        </mvc:message-converters>
-    </mvc:annotation-driven>
+    <!--
+        <bean id="jacksonObjectMapper" class="com.github.ittalks.fn.common.converter.JacksonObjectMapper" />
+        <mvc:annotation-driven>
+            <mvc:message-converters register-defaults="true">
+                <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                    <constructor-arg value="UTF-8"/>
+                    <property name="writeAcceptCharset" value="false"/>
+                </bean>
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                    <property name="objectMapper" ref="jacksonObjectMapper" />
+                </bean>
+            </mvc:message-converters>
+        </mvc:annotation-driven>
+    -->
 
     <!-- 启动包扫描功能，以便注册带有@Controller等注解的类成为spring的bean -->
-    <context:component-scan base-package="com.github.ittalks" />
+    <!--
+        <context:component-scan base-package="com.github.ittalks" />
+    -->
 
     <!-- 对模型视图名称的解析，在请求时模型视图名称添加前后缀 -->
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/views/" p:suffix=".jsp" />
+    <!--
+        <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/views/" p:suffix=".jsp" />
+    -->
 </beans>

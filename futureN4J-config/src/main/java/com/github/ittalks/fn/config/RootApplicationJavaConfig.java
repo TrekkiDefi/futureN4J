@@ -1,22 +1,31 @@
 package com.github.ittalks.fn.config;
 
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.ComponentScan.Filter;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /**
- * Created by 刘春龙 on 2017/6/30.
+ * Created by 刘春龙 on 2017/7/26.
  */
 @Configuration
 @PropertySource(value = {
-        "classpath:redis/*.properties",
-        "classpath:common/*.properties",
-        "classpath:google/*.properties",
-        "classpath:webservice/*.properties"
+        "classpath:/common/jdbc.properties",
+        "classpath:/common/mongo.properties",
+        "classpath:/common/redis.properties",
+        "classpath:/t3/gclient.properties",
+        "classpath:/webservice/server.properties"
 }, ignoreResourceNotFound = true)
 @ImportResource("classpath:/spring-ctx.xml")
-@EnableRedisHttpSession
+@ComponentScan(basePackages = {"com.github.ittalks"},
+        excludeFilters = {@Filter(type = FilterType.ANNOTATION, value = {EnableWebMvc.class})}
+)
 public class RootApplicationJavaConfig {
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 }
