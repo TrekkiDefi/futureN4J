@@ -20,6 +20,8 @@
 9. Log日志：logback
 10. HTTP Client：Retrofit封装
 11. 基于Redis分布式锁
+12. xml迁移为Java Config搭建(add by 20170726)
+13. 基于redis的分布式会话存储
 
 ## 三、项目Module
 

@@ -27,7 +27,7 @@ import java.util.List;
  * </ul>
  */
 @Configuration
-@EnableWebMvc
+//@EnableWebMvc
 @ComponentScan(basePackages = {"com.github.ittalks"},
         includeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION, value = {ControllerAdvice.class, ExceptionHandler.class})}
 )

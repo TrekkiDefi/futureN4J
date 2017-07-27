@@ -20,7 +20,7 @@ public class ExceptionController {
         throw new NullPointerException();
     }
 
-        @RequestMapping(value = "/invalidParam", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/invalidParam", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public Object invalidParam() {
         throw new NestedException(ErrorCode.PARAM_INVALID);
