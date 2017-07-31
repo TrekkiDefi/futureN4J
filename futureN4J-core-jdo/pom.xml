@@ -13,6 +13,7 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <!-- fn core -->
         <dependency>
             <groupId>com.github.ittalks</groupId>
             <artifactId>futureN4J-core</artifactId>

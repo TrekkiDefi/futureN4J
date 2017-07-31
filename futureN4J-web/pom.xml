@@ -15,19 +15,19 @@
     <url>http://maven.apache.org</url>
 
     <dependencies>
-        <!-- config-->
+        <!-- fn config -->
         <dependency>
             <groupId>com.github.ittalks</groupId>
             <artifactId>futureN4J-config</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        <!-- service-->
+        <!-- fn service -->
         <dependency>
             <groupId>com.github.ittalks</groupId>
             <artifactId>futureN4J-service</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        <!-- sdk-->
+        <!-- fn sdk -->
         <dependency>
             <groupId>com.github.ittalks</groupId>
             <artifactId>commons-sdk</artifactId>

@@ -67,7 +67,7 @@
         </dependency>
         <!-- #######################Google end############################ -->
 
-        <!-- core -->
+        <!-- fn core -->
         <dependency>
             <groupId>com.github.ittalks</groupId>
             <artifactId>futureN4J-core</artifactId>
@@ -78,13 +78,13 @@
             <artifactId>futureN4J-core-jdo</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        <!-- commons-collections -->
+        <!-- fn commons-collections -->
         <dependency>
             <groupId>com.github.ittalks</groupId>
             <artifactId>commons-collections</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        <!-- common -->
+        <!-- fn common -->
         <dependency>
             <groupId>com.github.ittalks</groupId>
             <artifactId>futureN4J-common</artifactId>

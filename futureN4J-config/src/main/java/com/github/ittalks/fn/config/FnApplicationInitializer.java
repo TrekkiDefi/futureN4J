@@ -22,7 +22,7 @@ public class FnApplicationInitializer extends AbstractAnnotationConfigDispatcher
      */
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class<?>[]{RootApplicationJavaConfig.class};
+        return new Class<?>[]{RootApplicationConfig.class};
     }
 
     /**
@@ -31,7 +31,7 @@ public class FnApplicationInitializer extends AbstractAnnotationConfigDispatcher
      */
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class<?>[]{WebApplicationJavaConfig.class};
+        return new Class<?>[]{WebApplicationConfig.class};
     }
 
     /**

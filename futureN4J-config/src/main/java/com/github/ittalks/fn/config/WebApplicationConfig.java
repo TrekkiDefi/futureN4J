@@ -8,7 +8,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.nio.charset.Charset;
@@ -32,7 +33,7 @@ import java.util.List;
         includeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION, value = {ControllerAdvice.class, ExceptionHandler.class})}
 )
 @ImportResource("/WEB-INF/spring-servlet.xml")
-public class WebApplicationJavaConfig extends DelegatingWebMvcConfiguration {
+public class WebApplicationConfig extends DelegatingWebMvcConfiguration {
 
 
     @Bean
@@ -55,14 +56,16 @@ public class WebApplicationJavaConfig extends DelegatingWebMvcConfiguration {
     }
 
     @Bean
-    public ViewResolver internalResourceViewResolver(){
+    public ViewResolver internalResourceViewResolver() {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
         resolver.setPrefix("/WEB-INF/views/");
         resolver.setSuffix(".jsp");
         return resolver;
     }
 
-    /**配置静态资源处理**/
+    /**
+     * 配置静态资源处理
+     **/
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();

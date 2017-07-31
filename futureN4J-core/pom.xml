@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <dependencies>
-        <!-- common -->
+        <!-- fn common -->
         <dependency>
             <groupId>com.github.ittalks</groupId>
             <artifactId>futureN4J-common</artifactId>
