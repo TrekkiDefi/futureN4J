@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.nio.charset.Charset;
@@ -19,13 +20,8 @@ import java.util.List;
  * Created by 刘春龙 on 2017/7/26.
  * <p>
  * 作为JavaConfig类，必须有@Configuration注解<br/>
- * 注解@EnableWebMvc启用SpringMVC，类似于xml中配置<mvc:annotation-driven/><br/>
- * 注意不同点在于<br/>
- * <ul>
- * <li>1.该注解不会配置ViewResolver。这样SpringMVC会使用默认配置；
- * <li>2.不起用注解扫描；
- * <li>3.默认情况下不使用默认的Servlet处理访问静态资源（一般我们不会这么做）；
- * </ul>
+ * 注解@{@link EnableWebMvc}启用SpringMVC，类似于xml中配置<mvc:annotation-driven/><br/>
+ * 扩展{@link DelegatingWebMvcConfiguration}，即等价于@{@code EnableWebMvc}
  */
 @Configuration
 //@EnableWebMvc
