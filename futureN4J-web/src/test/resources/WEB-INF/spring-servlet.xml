@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!-- standalone表示该xml是不是独立的。
+            如果是yes，则表示这个XML文档时独立的，不能引用外部的DTD规范文件；
+            如果是no，则该XML文档不是独立的，表示可以引用外部的DTD规范文档。
+    -->
+
+    <!-- 配置了component-scan，此处可以忽略 -->
+    <!--
+        <context:annotation-config/>
+    -->
+    <!--
+        启动注解驱动的Spring MVC功能，注册请求url和注解POJO类方法的映射
+        注册了处理器映射器和处理器适配器 同时还有其他配置，如参数绑定
+    -->
+    <!--
+        <bean id="jacksonObjectMapper" class="com.github.ittalks.fn.common.converter.JacksonObjectMapper" />
+        <mvc:annotation-driven>
+            <mvc:message-converters register-defaults="true">
+                <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                    <constructor-arg value="UTF-8"/>
+                    <property name="writeAcceptCharset" value="false"/>
+                </bean>
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                    <property name="objectMapper" ref="jacksonObjectMapper" />
+                </bean>
+            </mvc:message-converters>
+        </mvc:annotation-driven>
+    -->
+
+    <!-- 启动包扫描功能，以便注册带有@Controller等注解的类成为spring的bean -->
+    <!--
+        <context:component-scan base-package="com.github.ittalks" />
+    -->
+
+    <!-- 对模型视图名称的解析，在请求时模型视图名称添加前后缀 -->
+    <!--
+        <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/views/" p:suffix=".jsp" />
+    -->
+</beans>

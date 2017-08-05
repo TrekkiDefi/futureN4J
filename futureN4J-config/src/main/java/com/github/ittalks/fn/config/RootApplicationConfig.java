@@ -19,6 +19,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
         "classpath:/webservice/server.properties"
 }, ignoreResourceNotFound = true)
 @ImportResource("classpath:/spring-ctx.xml")
+@Import(value = {
+        FnWebSocketConfig.class,
+        FnExecutorConfigurer.class
+})
 @ComponentScan(basePackages = {"com.github.ittalks"},
         excludeFilters = {@Filter(type = FilterType.ANNOTATION, value = {EnableWebMvc.class})}
 )

@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 /**
  * Created by 刘春龙 on 2017/6/6.
  */
-@ControllerAdvice("com.github.ittalks")
+@ControllerAdvice
 public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {NestedException.class})
@@ -26,7 +26,7 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {RuntimeException.class})
-    public ResponseEntity<?> handleNestedException(RuntimeException e) {
+    public ResponseEntity<?> handleRuntimeException(RuntimeException e) {
         return new ResponseEntity<ErrorMessage>(ErrorCode.INTERNAL_SERVER_ERROR, null, ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
     }
 }
