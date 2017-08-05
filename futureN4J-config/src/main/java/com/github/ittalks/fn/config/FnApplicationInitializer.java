@@ -1,6 +1,10 @@
 package com.github.ittalks.fn.config;
 
+import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 /**
  * Created by 刘春龙 on 2017/7/26.
@@ -35,7 +39,7 @@ public class FnApplicationInitializer extends AbstractAnnotationConfigDispatcher
     }
 
     /**
-     * 等同于<mapping-url/>;
+     * 等同于{@code <mapping-url/>};
      */
     @Override
     protected String[] getServletMappings() {

@@ -1,9 +1,9 @@
 package com.github.ittalks.fn.config;
 
-import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.Conventions;
 import org.springframework.core.annotation.Order;
+import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
 import org.springframework.util.Assert;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.AbstractContextLoaderInitializer;
@@ -11,23 +11,23 @@ import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.DelegatingFilterProxy;
+import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+import org.springframework.web.servlet.support.AbstractDispatcherServletInitializer;
 
 import javax.servlet.*;
 import java.util.Arrays;
 import java.util.EnumSet;
 
 /**
- * Created by 刘春龙 on 2017/7/27.
- *
- * 重写了{@link AbstractHttpSessionApplicationInitializer}
+ * Created by liuchunlong on 2017/8/5.
+ * <p>
+ * Add springSessionRepositoryFilter, for Spring http session.
+ * <p>
+ * For detail see {@link AbstractHttpSessionApplicationInitializer}
  */
 @Order(100)
-public class FnHttpSessionApplicationInitializer implements WebApplicationInitializer {
-
-    /**
-     * Java Config
-     */
-    private final Class<?>[] configurationClasses;
+public class FnSpringHttpSessionInitializer implements WebApplicationInitializer {
 
     /**
      * The default name for Spring Session's repository filter.
@@ -36,30 +36,35 @@ public class FnHttpSessionApplicationInitializer implements WebApplicationInitia
 
     private static final String SERVLET_CONTEXT_PREFIX = "org.springframework.web.servlet.FrameworkServlet.CONTEXT.";
 
+
     /**
-     * 创建一个新的实例，假定Spring Session配置是通过其他方式加载的。<br/>
-     * 例如，用户可以使用{@link AbstractContextLoaderInitializer}的子类创建一个{@link ContextLoaderListener}。
+     * Java Config
+     */
+    private final Class<?>[] configurationClasses;
+
+    /**
+     * 构造函数，初始化{@code configurationClasses}为Null，假设Spring Session配置是通过其他方式加载的。<br/>
+     * <p>
+     * 例如，用户可以实现{@link AbstractContextLoaderInitializer}接口实例化一个{@link ContextLoaderListener}。
      *
      * @see ContextLoaderListener
      */
-    public FnHttpSessionApplicationInitializer() {
+    public FnSpringHttpSessionInitializer() {
         this.configurationClasses = null;
     }
 
     /**
-     * 创建一个新实例，它将使用指定的类实例化{@link ContextLoaderListener}。
+     * 构造函数，它将使用指定的Java Config实例化{@link ContextLoaderListener}。
      *
-     * @param configurationClasses 将用于配置上下文的 {@code @Configuration}类
+     * @param configurationClasses 用于配置应用上下文的 {@code @Configuration}类
      */
-    public FnHttpSessionApplicationInitializer(
-            Class<?>... configurationClasses) {
+    public FnSpringHttpSessionInitializer(Class<?>... configurationClasses) {
         this.configurationClasses = configurationClasses;
     }
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         beforeSessionRepositoryFilter(servletContext);
-
         if (this.configurationClasses != null) {
             AnnotationConfigWebApplicationContext rootAppContext = new AnnotationConfigWebApplicationContext();
             rootAppContext.register(this.configurationClasses);
@@ -67,24 +72,6 @@ public class FnHttpSessionApplicationInitializer implements WebApplicationInitia
         }
         insertSessionRepositoryFilter(servletContext);
         afterSessionRepositoryFilter(servletContext);
-    }
-
-    /**
-     * 在添加springSessionRepositoryFilter之前调用。
-     *
-     * @param servletContext {@link ServletContext}
-     */
-    protected void beforeSessionRepositoryFilter(ServletContext servletContext) {
-
-    }
-
-    /**
-     * 在添加springSessionRepositoryFilter之后调用。
-     *
-     * @param servletContext {@link ServletContext}
-     */
-    protected void afterSessionRepositoryFilter(ServletContext servletContext) {
-
     }
 
     /**
@@ -96,12 +83,12 @@ public class FnHttpSessionApplicationInitializer implements WebApplicationInitia
         String filterName = DEFAULT_FILTER_NAME;
         DelegatingFilterProxy springSessionRepositoryFilter = new DelegatingFilterProxy(filterName);
         String contextAttribute = getWebApplicationContextAttribute();
+
         if (contextAttribute != null) {
             springSessionRepositoryFilter.setContextAttribute(contextAttribute);
         }
         registerFilter(servletContext, true, filterName, springSessionRepositoryFilter);
     }
-
 
     /**
      * 使用{@link #isAsyncSessionSupported()}和{@link #getSessionDispatcherTypes()}注册提供的过滤器。
@@ -121,19 +108,18 @@ public class FnHttpSessionApplicationInitializer implements WebApplicationInitia
         }
         registration.setAsyncSupported(isAsyncSessionSupported());
         EnumSet<DispatcherType> dispatcherTypes = getSessionDispatcherTypes();
-        /*
-            dispatcherTypes - 过滤器映射的dispatcher types，如果要使用默认DispatcherType.REQUEST，则为null。
 
-            isMatchAfter - 如果给定的过滤器映射在任何声明的过滤器映射之后匹配，则为true；如果在获取此FilterRegistration的ServletContext的任何声明的过滤器映射之前应该匹配，则为false。
-
-            urlPatterns - 过滤器映射的url模式
+        /**
+         * dispatcherTypes - filter mapping 的 dispatcher types，如果要使用默认的DispatcherType.REQUEST，则为null。
+         * isMatchAfter - 如果给定的filter mapping在任何声明的filter mapping之后匹配，则为true；如果在获取此FilterRegistration的ServletContext的任何声明的filter mapping之前应该匹配，则为false。
+         * urlPatterns - filter mapping的url patterns
          */
         registration.addMappingForUrlPatterns(dispatcherTypes, !insertBeforeOtherFilters,
                 "/*");
     }
 
     /**
-     * 使用默认生成的名称、{@link #getSessionDispatcherTypes()}和{@link #isAsyncSessionSupported()}注册提供的{@link Filter}。
+     * 使用默认生成的名称、{@link #isAsyncSessionSupported()}和{@link #getSessionDispatcherTypes()}注册提供的{@link Filter}。
      *
      * @param servletContext           servlet上下文
      * @param insertBeforeOtherFilters 如果为true，将插入提供的{@link Filter}在其他{@link Filter}之前。 否则，将插入{@link Filter} 在其他{@link Filter}之后。
@@ -161,30 +147,10 @@ public class FnHttpSessionApplicationInitializer implements WebApplicationInitia
         registerFilters(servletContext, false, filters);
     }
 
-    private String getWebApplicationContextAttribute() {
-        String dispatcherServletName = getDispatcherWebApplicationContextSuffix();
-        if (dispatcherServletName == null) {
-            return null;
-        }
-        return SERVLET_CONTEXT_PREFIX + dispatcherServletName;
-    }
-
     /**
-     * 返回{@code <servlet-name>}以使用DispatcherServlet的{@link WebApplicationContext}查找{@link DelegatingFilterProxy}，或者null以使用父级{@link ApplicationContext}。
-     * <p>
-     * 例如，如果您使用AbstractDispatcherServletInitializer或AbstractAnnotationConfigDispatcherServletInitializer并使用提供的Servlet名称，
-     * 则可以从此方法返回"dispatcher"以使用DispatcherServlet的{@link WebApplicationContext}。
+     * springSessionRepositoryFilter是否支持异步。默认值为true。
      *
-     * @return DispatcherServlet的{@code <servlet-name>}以使用它的{@link WebApplicationContext}或null（默认）使用父级{@link ApplicationContext}。
-     */
-    protected String getDispatcherWebApplicationContextSuffix() {
-        return "dispatcher";
-    }
-
-    /**
-     * 确定springSessionRepositoryFilter是否应该被标记为支持异步。 默认值为true。
-     *
-     * @return true 如果springSessionRepositoryFilter应该被标记为支持异步，则返回true
+     * @return true 如果springSessionRepositoryFilter支持异步，则返回true
      */
     protected boolean isAsyncSessionSupported() {
         return true;
@@ -198,5 +164,41 @@ public class FnHttpSessionApplicationInitializer implements WebApplicationInitia
     protected EnumSet<DispatcherType> getSessionDispatcherTypes() {
         return EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR,
                 DispatcherType.ASYNC);
+    }
+
+    private String getWebApplicationContextAttribute() {
+        String dispatcherServletName = getDispatcherWebApplicationContextSuffix();
+        if (dispatcherServletName == null) {
+            return null;
+        }
+        return SERVLET_CONTEXT_PREFIX + dispatcherServletName;
+    }
+
+    /**
+     * 返回{@code <servlet-name>}，以使用{@link DispatcherServlet}的{@link WebApplicationContext}查找{@link DelegatingFilterProxy}，或者Null使用父级{@link ApplicationContext}。
+     * <p>
+     * 例如，如果您使用{@link AbstractDispatcherServletInitializer}或{@link AbstractAnnotationConfigDispatcherServletInitializer}并使用提供的Servlet名称，
+     * 则可以从此方法返回"dispatcher"以使用DispatcherServlet的{@link WebApplicationContext}。
+     *
+     * @return DispatcherServlet的{@code <servlet-name>}以使用它的{@link WebApplicationContext}或Null（默认）使用父级{@link ApplicationContext}。
+     */
+    protected String getDispatcherWebApplicationContextSuffix() {
+        return "dispatcher";
+    }
+
+    /**
+     * 在添加springSessionRepositoryFilter之前调用。
+     *
+     * @param servletContext {@link ServletContext}
+     */
+    protected void beforeSessionRepositoryFilter(ServletContext servletContext) {
+    }
+
+    /**
+     * 在添加springSessionRepositoryFilter之后调用。
+     *
+     * @param servletContext {@link ServletContext}
+     */
+    protected void afterSessionRepositoryFilter(ServletContext servletContext) {
     }
 }
