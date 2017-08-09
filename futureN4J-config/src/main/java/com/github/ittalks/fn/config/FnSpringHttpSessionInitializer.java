@@ -22,10 +22,9 @@ import org.springframework.web.servlet.support.AbstractDispatcherServletInitiali
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * Created by liuchunlong on 2017/8/5.
@@ -52,6 +51,19 @@ public class FnSpringHttpSessionInitializer implements WebApplicationInitializer
      * Java Config
      */
     private final Class<?>[] configurationClasses;
+
+
+    static Properties properties = new Properties();
+    static {
+        InputStream inputStream = FnSpringHttpSessionInitializer.class.getClassLoader().getResourceAsStream("common/druid.properties");
+        try {
+            properties.load(inputStream);
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * 构造函数，初始化{@code configurationClasses}为Null，假设Spring Session配置是通过其他方式加载的。<br/>
@@ -263,10 +275,10 @@ public class FnSpringHttpSessionInitializer implements WebApplicationInitializer
          */
         Servlet statViewServlet = new StatViewServlet();
         Map<String, String> svsInitParams = new HashMap<>();
-        svsInitParams.put("allow", "127.0.0.1");
-        svsInitParams.put("deny", "");
-        svsInitParams.put("loginUsername", "admin");
-        svsInitParams.put("loginPassword", "admin");
+        svsInitParams.put("allow", properties.getProperty("druid.manager.allow"));
+        svsInitParams.put("deny", properties.getProperty("druid.manager.deny"));
+        svsInitParams.put("loginUsername", properties.getProperty("druid.manager.loginUsername"));
+        svsInitParams.put("loginPassword", properties.getProperty("druid.manager.loginPassword"));
         String statViewServletName = Conventions.getVariableName(statViewServlet);
         registerServlet(servletContext, statViewServletName, statViewServlet, svsInitParams, "/druid/*");
 

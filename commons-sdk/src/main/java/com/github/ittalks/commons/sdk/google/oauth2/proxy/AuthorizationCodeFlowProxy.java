@@ -58,9 +58,9 @@ public class AuthorizationCodeFlowProxy {
         if (clientSecrets.getDetails().getClientId().startsWith("Enter")
                 || clientSecrets.getDetails().getClientSecret().startsWith("Enter ")) {
             logger.info("Enter Client ID and Secret from https://core.google.com/apis/console/ "
-                    + "into resources/t3/gsecrets.json");
+                    + "into resources/third/gsecrets.json");
             throw new RuntimeException("Enter Client ID and Secret from https://code.google.com/apis/console/ "
-                    + "into resources/t3/gsecrets.json");
+                    + "into resources/third/gsecrets.json");
         }
 
         //data store

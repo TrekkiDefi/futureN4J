@@ -30,10 +30,10 @@ import java.sql.SQLException;
 //@EnableJpaRepositories(basePackages = "com.github.ittalks.fn.core.jpa")
 
 @PropertySource(value = {
-        "classpath:/common/jdbc.properties",
+        "classpath:/common/druid.properties",
         "classpath:/common/mongo.properties",
         "classpath:/common/redis.properties",
-        "classpath:/t3/gclient.properties",
+        "classpath:/third/gclient.properties",
         "classpath:/webservice/server.properties"
 }, ignoreResourceNotFound = true)
 @ImportResource("classpath:/spring-ctx.xml")
