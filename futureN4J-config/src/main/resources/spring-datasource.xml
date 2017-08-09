@@ -11,20 +11,22 @@
        http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
 
     <!-- 数据源配置：阿里数据库连接池 -->
+    <!--
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
-        <property name="driverClassName" value="${mysql.driverClassName}" />
-        <property name="url" value="${mysql.url}" />
-        <property name="username" value="${mysql.username}" />
-        <property name="password" value="${mysql.password}" />
-        <property name="initialSize" value="${mysql.initialSize}" />
-        <property name="maxActive" value="${mysql.maxActive}" />
-        <property name="maxIdle" value="${mysql.maxIdle}" />
-        <property name="minIdle" value="${mysql.minIdle}" />
-        <property name="maxWait" value="${mysql.maxWait}" />
+        <property name="driverClassName" value="${spring.datasource.driverClassName}" />
+        <property name="url" value="${spring.datasource.url}" />
+        <property name="username" value="${spring.datasource.username}" />
+        <property name="password" value="${spring.datasource.password}" />
+        <property name="initialSize" value="${spring.datasource.initialSize}" />
+        <property name="maxActive" value="${spring.datasource.maxActive}" />
+        <property name="minIdle" value="${spring.datasource.minIdle}" />
+        <property name="maxWait" value="${spring.datasource.maxWait}" />
         <property name="defaultAutoCommit" value="false" />
     </bean>
+    -->
 
     <!-- PMF Bean -->
+    <!--
     <bean id="pmf"
           class="org.springframework.orm.jdo.LocalPersistenceManagerFactoryBean">
         <property name="jdoProperties">
@@ -35,11 +37,14 @@
             </map>
         </property>
     </bean>
+    -->
 
     <!-- Transaction Manager for PMF -->
+    <!--
     <bean id="jdoTransactionManager" class="org.springframework.orm.jdo.JdoTransactionManager">
         <property name="persistenceManagerFactory">
             <ref bean="pmf"/>
         </property>
     </bean>
+    -->
 </beans>

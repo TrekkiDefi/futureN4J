@@ -1,8 +1,13 @@
 package com.github.ittalks.fn.config;
 
+import com.alibaba.druid.support.http.StatViewServlet;
+import com.alibaba.druid.support.http.WebStatFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.core.Conventions;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
 import org.springframework.util.Assert;
 import org.springframework.web.WebApplicationInitializer;
@@ -16,17 +21,23 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 import org.springframework.web.servlet.support.AbstractDispatcherServletInitializer;
 
 import javax.servlet.*;
+import javax.servlet.http.HttpServlet;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by liuchunlong on 2017/8/5.
  * <p>
- * Add springSessionRepositoryFilter, for Spring http session.
+ * <ul>
+ * <li>1. Add springSessionRepositoryFilter, for Spring http session.
+ * <li>2. Filter、Listener、Servlet Registration
+ * </ul>
  * <p>
- * For detail see {@link AbstractHttpSessionApplicationInitializer}
+ * see {@link AbstractHttpSessionApplicationInitializer}
  */
-@Order(100)
+@Order(Integer.MAX_VALUE)
 public class FnSpringHttpSessionInitializer implements WebApplicationInitializer {
 
     /**
@@ -119,6 +130,60 @@ public class FnSpringHttpSessionInitializer implements WebApplicationInitializer
     }
 
     /**
+     * 使用{@link #isAsyncSessionSupported()}和{@link #getSessionDispatcherTypes()}注册提供的过滤器。
+     *
+     * @param servletContext           servlet上下文
+     * @param insertBeforeOtherFilters 此过滤器是否应该在其他{@link Filter}之前插入
+     * @param filterName               过滤器名称
+     * @param filter                   过滤器
+     * @param initParams               初始化参数
+     * @param urlPatterns              拦截路径
+     */
+    private void registerFilter(ServletContext servletContext,
+                                boolean insertBeforeOtherFilters, String filterName, Filter filter,
+                                Map<String, String> initParams,
+                                String... urlPatterns) {
+        Assert.notNull(initParams, "Init Params cant null.");
+        FilterRegistration.Dynamic registration = servletContext.addFilter(filterName, filter);
+        if (registration == null) {
+            throw new IllegalStateException(
+                    "Duplicate Filter registration for '" + filterName
+                            + "'. Check to ensure the Filter is only configured once.");
+        }
+        registration.setInitParameters(initParams);
+        registration.setAsyncSupported(isAsyncSessionSupported());
+        EnumSet<DispatcherType> dispatcherTypes = getSessionDispatcherTypes();
+
+        registration.addMappingForUrlPatterns(dispatcherTypes, !insertBeforeOtherFilters,
+                urlPatterns);
+    }
+
+    /**
+     * 使用{@link #isAsyncSessionSupported()}注册提供的Servlet。
+     *
+     * @param servletContext servlet上下文
+     * @param servletName    servlet名称
+     * @param servlet        servlet
+     * @param initParams     初始化参数
+     * @param urlPatterns    拦截路径
+     */
+    private void registerServlet(ServletContext servletContext,
+                                 String servletName, Servlet servlet,
+                                 Map<String, String> initParams,
+                                 String... urlPatterns) {
+        Assert.notNull(initParams, "Init Params cant null.");
+        ServletRegistration.Dynamic registration = servletContext.addServlet(servletName, servlet);
+        if (registration == null) {
+            throw new IllegalStateException(
+                    "Duplicate Servlet registration for '" + servletName
+                            + "'. Check to ensure the Filter is only configured once.");
+        }
+        registration.setInitParameters(initParams);
+        registration.setAsyncSupported(isAsyncSessionSupported());
+        registration.addMapping(urlPatterns);
+    }
+
+    /**
      * 使用默认生成的名称、{@link #isAsyncSessionSupported()}和{@link #getSessionDispatcherTypes()}注册提供的{@link Filter}。
      *
      * @param servletContext           servlet上下文
@@ -192,6 +257,27 @@ public class FnSpringHttpSessionInitializer implements WebApplicationInitializer
      * @param servletContext {@link ServletContext}
      */
     protected void beforeSessionRepositoryFilter(ServletContext servletContext) {
+
+        /**
+         * 阿里数据库连接池，监控后台配置
+         */
+        Servlet statViewServlet = new StatViewServlet();
+        Map<String, String> svsInitParams = new HashMap<>();
+        svsInitParams.put("allow", "127.0.0.1");
+        svsInitParams.put("deny", "");
+        svsInitParams.put("loginUsername", "admin");
+        svsInitParams.put("loginPassword", "admin");
+        String statViewServletName = Conventions.getVariableName(statViewServlet);
+        registerServlet(servletContext, statViewServletName, statViewServlet, svsInitParams, "/druid/*");
+
+        /**
+         * 阿里数据库连接池，启用 Web 监控统计功能
+         */
+        Filter webStatFilter = new WebStatFilter();
+        Map<String, String> wsfInitParams = new HashMap<>();
+        wsfInitParams.put("exclusions", "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*");
+        String webStatFilterName = Conventions.getVariableName(webStatFilter);
+        registerFilter(servletContext, false, webStatFilterName, webStatFilter, wsfInitParams, "/*");
     }
 
     /**
@@ -201,4 +287,5 @@ public class FnSpringHttpSessionInitializer implements WebApplicationInitializer
      */
     protected void afterSessionRepositoryFilter(ServletContext servletContext) {
     }
+
 }

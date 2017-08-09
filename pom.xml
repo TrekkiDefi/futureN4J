@@ -82,6 +82,7 @@
         <cxf.version>3.1.5</cxf.version>
 
         <javax.inject.version>1</javax.inject.version>
+        <lombok.version>1.16.18</lombok.version>
         <!-- test -->
         <junit.version>4.12</junit.version>
     </properties>
@@ -230,10 +231,14 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
-
         <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
 
         <!-- test -->
@@ -710,6 +715,12 @@
                 <groupId>javax.inject</groupId>
                 <artifactId>javax.inject</artifactId>
                 <version>${javax.inject.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
             </dependency>
 
             <!-- test -->
