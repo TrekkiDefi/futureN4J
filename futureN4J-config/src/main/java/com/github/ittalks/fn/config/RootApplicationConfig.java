@@ -19,16 +19,8 @@ import java.sql.SQLException;
  * Created by 刘春龙 on 2017/7/26.
  */
 @Configuration
-
 // enable spring redis session
 @EnableRedisHttpSession
-
-// enable transaction management
-@EnableTransactionManagement
-
-// enable spring data jpa
-//@EnableJpaRepositories(basePackages = "com.github.ittalks.fn.core.jpa")
-
 @PropertySource(value = {
         "classpath:/common/druid.properties",
         "classpath:/common/mongo.properties",
@@ -45,14 +37,7 @@ import java.sql.SQLException;
 @ComponentScan(basePackages = {"com.github.ittalks"},
         excludeFilters = {@Filter(type = FilterType.ANNOTATION, value = {EnableWebMvc.class})}
 )
-public class RootApplicationConfig implements EnvironmentAware {
-
-    Environment environment;
-
-    @Override
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
-    }
+public class RootApplicationConfig {
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {

@@ -2,11 +2,21 @@ package com.github.ittalks.fn.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jdo.JdoTransactionManager;
 import org.springframework.orm.jdo.LocalPersistenceManagerFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.Database;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -16,7 +26,18 @@ import java.util.Map;
  * Created by 刘春龙 on 2017/8/9.
  */
 @Configuration
-public class FnDataSourceConfig {
+// enable transaction management
+@EnableTransactionManagement
+// enable spring data jpa
+@EnableJpaRepositories(basePackages = "com.github.ittalks.fn.core.jpa")
+public class FnDataSourceConfig implements EnvironmentAware {
+
+    Environment environment;
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
 
     @Value("${spring.datasource.driverClassName}")
     String driver;
@@ -56,8 +77,12 @@ public class FnDataSourceConfig {
     String filters;
 
     //===============================================
-    //阿里数据库连接池
+    // 阿里数据库连接池
     //===============================================
+    /**
+     * 相关监控以及监控后台，见{@link FnSpringHttpSessionInitializer#beforeSessionRepositoryFilter(ServletContext)}
+     * @return
+     */
     @Bean(destroyMethod = "close")
     public DataSource dataSource() {
         DruidDataSource druidDataSource = new DruidDataSource();
@@ -89,7 +114,7 @@ public class FnDataSourceConfig {
     }
 
     //===============================================
-    //jdo
+    // jdo
     //===============================================
     @Bean(name = "pmf")
     public LocalPersistenceManagerFactoryBean jdoPersistenceManagerFactory() {
@@ -103,14 +128,33 @@ public class FnDataSourceConfig {
         return jdoPersistenceManagerFactory;
     }
     @Bean(name = "jdoTransactionManager")
-    public JdoTransactionManager jdoTransactionManager() {
+    public PlatformTransactionManager jdoTransactionManager() {
         JdoTransactionManager jdoTransactionManager = new JdoTransactionManager();
         jdoTransactionManager.setPersistenceManagerFactory(jdoPersistenceManagerFactory().getObject());
         return jdoTransactionManager;
     }
 
     //===============================================
-    //jpa
+    // jpa
     //===============================================
+    @Bean
+    public LocalContainerEntityManagerFactoryBean jpaEntityManagerFactory() {
 
+        HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
+        jpaVendorAdapter.setDatabase(Database.valueOf(environment.getProperty("jpa.database")));
+        jpaVendorAdapter.setGenerateDdl(Boolean.parseBoolean(environment.getProperty("jpa.generateDdl")));
+        jpaVendorAdapter.setShowSql(Boolean.parseBoolean(environment.getProperty("jpa.showSql")));
+
+        LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
+        emf.setDataSource(dataSource());
+        emf.setPackagesToScan("com.github.ittalks.fn.core.jpa");
+        emf.setJpaVendorAdapter(jpaVendorAdapter);
+        return emf;
+    }
+    @Bean
+    public PlatformTransactionManager jpaTransactionManager() {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(jpaEntityManagerFactory().getObject());
+        return transactionManager;
+    }
 }
