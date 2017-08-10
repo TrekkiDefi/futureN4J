@@ -83,6 +83,8 @@
         <cxf.version>3.1.5</cxf.version>
 
         <javax.inject.version>1</javax.inject.version>
+        <javax.jdo.version>3.0.1</javax.jdo.version>
+
         <lombok.version>1.16.18</lombok.version>
         <!-- test -->
         <junit.version>4.12</junit.version>
@@ -227,10 +229,15 @@
             <artifactId>gson</artifactId>
         </dependency>
 
-        <!-- servlet & jsp -->
+        <!-- servlet -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+        <!-- jdo -->
+        <dependency>
+            <groupId>javax.jdo</groupId>
+            <artifactId>jdo-api</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.inject</groupId>
@@ -555,25 +562,6 @@
                 <version>${cglib.version}</version>
             </dependency>
 
-            <!-- servlet & jsp -->
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>${servlet.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>javax.servlet.jsp</groupId>
-                <artifactId>jsp-api</artifactId>
-                <version>${jsp.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>jstl</artifactId>
-                <version>${jstl.version}</version>
-            </dependency>
-
             <!-- alibaba -->
             <dependency>
                 <groupId>com.alibaba</groupId>
@@ -717,6 +705,31 @@
             <!-- cxf-webservice end -->
 
 
+            <!-- servlet -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${servlet.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- jsp -->
+            <dependency>
+                <groupId>javax.servlet.jsp</groupId>
+                <artifactId>jsp-api</artifactId>
+                <version>${jsp.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>jstl</artifactId>
+                <version>${jstl.version}</version>
+            </dependency>
+            <!-- jdo -->
+            <dependency>
+                <groupId>javax.jdo</groupId>
+                <artifactId>jdo-api</artifactId>
+                <version>${javax.jdo.version}</version>
+            </dependency>
             <dependency>
                 <groupId>javax.inject</groupId>
                 <artifactId>javax.inject</artifactId>

@@ -100,10 +100,10 @@ public class FnDataSourceConfig {
         return jdoPersistenceManagerFactory;
     }
 
-//    @Bean(name = "jdoTransactionManager")
-//    public JdoTransactionManager jdoTransactionManager() {
-//        JdoTransactionManager jdoTransactionManager = new JdoTransactionManager();
-//        jdoTransactionManager.setPersistenceManagerFactory(jdoPersistenceManagerFactory());
-//        return jdoTransactionManager;
-//    }
+    @Bean(name = "jdoTransactionManager")
+    public JdoTransactionManager jdoTransactionManager() {
+        JdoTransactionManager jdoTransactionManager = new JdoTransactionManager();
+        jdoTransactionManager.setPersistenceManagerFactory(jdoPersistenceManagerFactory().getObject());
+        return jdoTransactionManager;
+    }
 }

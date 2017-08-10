@@ -12,7 +12,7 @@
 1. ioc容器：Spring
 2. web框架：SpringMVC
 3. orm框架：Mybatis
-4. 数据存储：Mongo/Mysql
+4. druid数据源、druid日志监控
 5. 缓存：Redis
 6. 基于Redis分布式队列
 7. 线程池
@@ -20,8 +20,9 @@
 9. Log日志：logback
 10. HTTP Client：Retrofit封装
 11. 基于Redis分布式锁
-12. xml迁移为Java Config搭建(add by 20170726)
-13. 基于redis的分布式会话存储
+12. xml迁移为Java Config搭建
+13. 基于redis的分布式会话存储 - spring redis session
+14. spring data jpa
 
 ## 三、项目Module
 
