@@ -88,6 +88,9 @@ public class FnDataSourceConfig {
         return druidDataSource;
     }
 
+    //===============================================
+    //jdo
+    //===============================================
     @Bean(name = "pmf")
     public LocalPersistenceManagerFactoryBean jdoPersistenceManagerFactory() {
         LocalPersistenceManagerFactoryBean jdoPersistenceManagerFactory = new LocalPersistenceManagerFactoryBean();
@@ -99,11 +102,15 @@ public class FnDataSourceConfig {
         jdoPersistenceManagerFactory.setJdoPropertyMap(jdoPropertyMap);
         return jdoPersistenceManagerFactory;
     }
-
     @Bean(name = "jdoTransactionManager")
     public JdoTransactionManager jdoTransactionManager() {
         JdoTransactionManager jdoTransactionManager = new JdoTransactionManager();
         jdoTransactionManager.setPersistenceManagerFactory(jdoPersistenceManagerFactory().getObject());
         return jdoTransactionManager;
     }
+
+    //===============================================
+    //jpa
+    //===============================================
+
 }
