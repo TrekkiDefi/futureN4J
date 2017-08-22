@@ -26,7 +26,7 @@ public class TaskQueueManager implements ApplicationListener<ContextRefreshedEve
     public static final String SIMPLE = "SIMPLE";
     public static final String SAFE = "SAFE";
     public static String BACK_UP_QUEUE;//备份队列名称
-    public static String BACK_UP_QUEUE_BASE = "BACK_UP_QUEUE#";//备份队列名称
+    public static String BACK_UP_QUEUE_BASE = "BACK_UP_QUEUE#";//备份队列名称前缀
 
     private static Map<String, Object> queueMap =
             new ConcurrentHashMap<String, Object>();
@@ -37,7 +37,18 @@ public class TaskQueueManager implements ApplicationListener<ContextRefreshedEve
         try {
             MessageDigest digest = MessageDigest.getInstance("MD5");
             BASE64Encoder base64Encoder = new BASE64Encoder();
-            BACK_UP_QUEUE = BACK_UP_QUEUE_BASE + base64Encoder.encode(digest.digest(BACK_UP_QUEUE_BASE.getBytes("UTF-8")));
+
+            // 获取队列名称
+            StringBuilder queueNameMulti = new StringBuilder();
+            Properties properties = ConfigManager.getRedisQueue();
+            String[] qInfos = properties.getProperty("redis.queues").trim().split(";");
+            for (String qInfo : qInfos) {
+                String[] qnms = qInfo.trim().split(":");
+                String qName = qnms[0].trim();
+                queueNameMulti.append(qName);
+            }
+
+            BACK_UP_QUEUE = BACK_UP_QUEUE_BASE + base64Encoder.encode(digest.digest(queueNameMulti.toString().getBytes("UTF-8")));
         } catch (Exception e) {
             e.printStackTrace();
         }

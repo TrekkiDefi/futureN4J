@@ -1,6 +1,10 @@
 package com.github.ittalks.fn.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.github.ittalks.commons.redis.queue.config.ConfigManager;
+import com.github.ittalks.commons.sdk.google.calendar.task.DTQueueConsumer;
+import com.github.ittalks.commons.sdk.google.calendar.task.MSQueueConsumer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.*;
@@ -14,6 +18,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.EventListener;
+import java.util.Properties;
 
 /**
  * Created by 刘春龙 on 2017/7/26.
@@ -39,8 +45,29 @@ import java.sql.SQLException;
 )
 public class RootApplicationConfig {
 
+    @Autowired
+    Environment environment;
+
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
+    }
+
+    @Bean
+    public ConfigManager redisConfigManager() {
+        Properties redisConn = new Properties();
+        redisConn.setProperty("redis.pool.maxTotal", environment.getProperty("redis.pool.maxTotal"));
+        redisConn.setProperty("redis.pool.maxIdle", environment.getProperty("redis.pool.maxIdle"));
+        redisConn.setProperty("redis.pool.maxWaitMillis", environment.getProperty("redis.pool.maxWaitMillis"));
+        redisConn.setProperty("redis.connectMode", environment.getProperty("redis.connectMode"));
+        redisConn.setProperty("redis.pool.host", environment.getProperty("redis.host"));
+        redisConn.setProperty("redis.pool.port", environment.getProperty("redis.port"));
+        redisConn.setProperty("redis.hostPort", environment.getProperty("redis.hostPort"));
+
+        Properties redisQueue = new Properties();
+        redisQueue.setProperty("redis.queues", environment.getProperty("redis.queues"));
+        redisQueue.setProperty("redis.queue.repeat", environment.getProperty("redis.queue.repeat"));
+
+        return new ConfigManager(redisConn, redisQueue);
     }
 }

@@ -132,7 +132,7 @@ public class SynEventsTaskHandler implements TaskHandler {
             logger.info(String.format("Syncing event: ID=%s, Name=%s", event.getId(), event.getSummary()));
             //将接收到的`事件`放入`数据队列`
             //1.获取`数据队列`
-            TaskQueue taskQueue = TaskQueueManager.getTaskQueue(Queue.DAT_QUEUE.getName());
+            TaskQueue taskQueue = TaskQueueManager.getTaskQueue(Queue.DT_QUEUE.getName());
             //2.组装`事件`
             ReceivedEvent receivedEvent = new ReceivedEvent();
             receivedEvent.setUserId(userid);

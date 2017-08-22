@@ -1,4 +1,4 @@
-package com.github.ittalks.commons.sdk.google.calendar.task.tpool;
+package com.github.ittalks.commons.sdk.google.calendar.task.pool;
 
 
 import com.github.ittalks.commons.thread.pool.ExecutorServiceFactory;
@@ -12,23 +12,23 @@ import java.util.logging.Logger;
 /**
  * Created by 刘春龙 on 2017/4/10.
  *
- * 单线程处理类，消费数据队列任务
+ * 单线程处理类，消费消息队列任务
  */
-public class DatExecutorProcessPool {
+public class MSExecutorProcessPool {
 
-    public static final Logger logger = Logger.getLogger(DatExecutorProcessPool.class.getName());
+    public static final Logger logger = Logger.getLogger(MSExecutorProcessPool.class.getName());
 
-    private static DatExecutorProcessPool pool = new DatExecutorProcessPool();
+    private static MSExecutorProcessPool pool = new MSExecutorProcessPool();
 
     private ExecutorService executor;
-    private final String threadName = Queue.DAT_QUEUE.getName() + " thread";//线程名称
+    private final String threadName = Queue.MS_QUEUE.getName() + " thread";//线程名称
 
-    private DatExecutorProcessPool() {
+    private MSExecutorProcessPool() {
         logger.info("[Thread Pool Init] - Thread Name:" + threadName);
         executor = ExecutorServiceFactory.getInstance().createSingleThreadExecutor(threadName);
     }
 
-    public static DatExecutorProcessPool getInstance() {
+    public static MSExecutorProcessPool getInstance() {
         return pool;
     }
 

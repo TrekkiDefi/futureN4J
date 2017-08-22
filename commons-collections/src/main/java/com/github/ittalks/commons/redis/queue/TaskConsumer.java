@@ -12,10 +12,10 @@ import javax.servlet.ServletException;
  *
  * 任务消费者
  */
-public abstract class TaskConsumer implements ApplicationListener<ContextRefreshedEvent> {
+public interface TaskConsumer {
 
     /**
      * 消费任务
      */
-    public abstract void consume();
+    void consume();
 }

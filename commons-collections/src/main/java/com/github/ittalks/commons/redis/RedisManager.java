@@ -67,15 +67,18 @@ public class RedisManager {
 
         logger.info(String.format("connectMode : %s, hostPort: %s.", connectMode, hostPort));
 
-        if (StringUtils.isEmpty(hostPort)) {
-            throw new RuntimeException("redis配置文件未配置主机-端口集。");
-        }
-        //根据配置实例化jedis池
-        String[] hostPortSet = hostPort.split(",");
         if ("single".equals(connectMode)) {
             //单机连接
             pool = new JedisPool(jedisPoolConfig, host, Integer.valueOf(port));
         } else if ("sentinel".equals(connectMode)) {
+
+            if (StringUtils.isEmpty(hostPort)) {
+                throw new RuntimeException("redis配置文件未配置主机-端口集。");
+            }
+
+            //根据配置实例化jedis池
+            String[] hostPortSet = hostPort.split(",");
+
             Set<String> sentinels = new HashSet<String>();
 
             for (String hostPortInfo : hostPortSet) {

@@ -1,5 +1,10 @@
 package com.github.ittalks.commons.redis.queue.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
 import java.util.Properties;
 
 /**
@@ -10,11 +15,8 @@ public class ConfigManager {
     private static Properties redisConn;
     private static Properties redisQueue;
 
-    public void setRedisConn(Properties redisConn) {
+    public ConfigManager(Properties redisConn, Properties redisQueue) {
         ConfigManager.redisConn = redisConn;
-    }
-
-    public void setRedisQueue(Properties redisQueue) {
         ConfigManager.redisQueue = redisQueue;
     }
 
@@ -25,4 +27,5 @@ public class ConfigManager {
     public static Properties getRedisQueue() {
         return redisQueue;
     }
+
 }

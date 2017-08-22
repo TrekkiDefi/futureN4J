@@ -123,7 +123,7 @@ public class SynCalendarListTaskHandler implements TaskHandler {
          * 将接收到的`日历`放入`数据队列`
          */
         // 1.获取`数据队列`
-        TaskQueue datTaskQueue = TaskQueueManager.getTaskQueue(Queue.DAT_QUEUE.getName());
+        TaskQueue datTaskQueue = TaskQueueManager.getTaskQueue(Queue.DT_QUEUE.getName());
         //2.组装`日历`
         ReceivedCalendarListEntry receivedCalendarListEntry = new ReceivedCalendarListEntry();
         receivedCalendarListEntry.setUserId(syncCalendarListEntity.getUserId());

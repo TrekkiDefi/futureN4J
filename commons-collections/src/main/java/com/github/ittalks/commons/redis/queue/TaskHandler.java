@@ -5,5 +5,5 @@ package com.github.ittalks.commons.redis.queue;
  */
 public interface TaskHandler {
 
-    public void handle(String data);
+    void handle(String data);
 }

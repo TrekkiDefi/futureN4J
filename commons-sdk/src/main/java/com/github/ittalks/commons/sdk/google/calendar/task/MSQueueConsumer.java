@@ -7,8 +7,9 @@ import com.github.ittalks.commons.redis.queue.TaskQueue;
 import com.github.ittalks.commons.redis.queue.TaskQueueManager;
 import com.github.ittalks.commons.redis.queue.common.RetryPolicy;
 import com.github.ittalks.commons.sdk.google.calendar.enums.Queue;
-import com.github.ittalks.commons.sdk.google.calendar.task.tpool.ExecutorProcessPool;
-import com.github.ittalks.commons.sdk.google.calendar.task.tpool.DatExecutorProcessPool;
+import com.github.ittalks.commons.sdk.google.calendar.task.pool.ExecutorProcessPool;
+import com.github.ittalks.commons.sdk.google.calendar.task.pool.MSExecutorProcessPool;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import java.text.DateFormat;
@@ -19,26 +20,27 @@ import java.util.logging.Logger;
 /**
  * Created by 刘春龙 on 2017/3/6.
  */
-public class DatQueueComsumer extends TaskConsumer {
+public class MSQueueConsumer implements TaskConsumer, ApplicationListener<ContextRefreshedEvent> {
 
-    public static final Logger logger = Logger.getLogger(DatQueueComsumer.class.getName());
+    public static final Logger logger = Logger.getLogger(MSQueueConsumer.class.getName());
 
-    private DatExecutorProcessPool datPool = DatExecutorProcessPool.getInstance();
+    private MSExecutorProcessPool msPool = MSExecutorProcessPool.getInstance();
     private ExecutorProcessPool pool = ExecutorProcessPool.getInstance();
+
     @Override
     public void consume() {
         TaskQueue taskQueue = null;
 
         try {
-            taskQueue = TaskQueueManager.getTaskQueue(Queue.DAT_QUEUE.getName());
+            taskQueue = TaskQueueManager.getTaskQueue(Queue.MS_QUEUE.getName());
 
             if (taskQueue != null) {
                 DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                logger.info("队列[" + Queue.DAT_QUEUE.getName() + "]消费开始：" + format.format(new Date()));
+                logger.info("队列[" + Queue.MS_QUEUE.getName() + "]消费开始：" + format.format(new Date()));
 
                 while (true) {
 
-                    final Task task = taskQueue.popTask();
+                    final Task task = taskQueue.popTask();//阻塞方式获取任务
 
                     if (task == null) {
                         //获取队列任务失败，采取重试策略
@@ -46,8 +48,7 @@ public class DatQueueComsumer extends TaskConsumer {
                         continue;
                     }
 
-                    if (!Queue.DAT_QUEUE.getName().equals(task.getQueue())) {
-                        //不是数据队列任务，不处理
+                    if (!Queue.MS_QUEUE.getName().equals(task.getQueue())) {
                         continue;
                     }
 
@@ -75,7 +76,7 @@ public class DatQueueComsumer extends TaskConsumer {
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         if (contextRefreshedEvent.getApplicationContext().getParent() == null) {
-            datPool.execute(new Runnable() {
+            msPool.execute(new Runnable() {
                 @Override
                 public void run() {
                     consume();

@@ -32,24 +32,4 @@
         <property name="connectionFactory" ref="jedisConnFactory" />
     </bean>
 
-
-    <bean id="configManager" class="com.github.ittalks.commons.redis.queue.config.ConfigManager">
-        <property name="redisConn">
-            <props>
-                <prop key="redis.pool.maxTotal">${redis.pool.maxTotal}</prop>
-                <prop key="redis.pool.maxIdle">${redis.pool.maxIdle}</prop>
-                <prop key="redis.pool.maxWaitMillis">${redis.pool.maxWaitMillis}</prop>
-                <prop key="redis.connectMode">${redis.connectMode}</prop>
-                <prop key="redis.pool.host">${redis.host}</prop>
-                <prop key="redis.pool.port">${redis.port}</prop>
-                <prop key="redis.hostPort">${redis.hostPort}</prop>
-            </props>
-        </property>
-        <property name="redisQueue">
-            <props>
-                <prop key="redis.queues">${redis.queues}</prop>
-                <prop key="redis.queue.repeat">${redis.queue.repeat}</prop>
-            </props>
-        </property>
-    </bean>
 </beans>

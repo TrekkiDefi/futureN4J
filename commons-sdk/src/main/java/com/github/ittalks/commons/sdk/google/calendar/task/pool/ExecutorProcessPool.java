@@ -1,8 +1,7 @@
-package com.github.ittalks.commons.sdk.google.calendar.task.tpool;
+package com.github.ittalks.commons.sdk.google.calendar.task.pool;
 
 
 import com.github.ittalks.commons.thread.pool.ExecutorServiceFactory;
-import com.github.ittalks.commons.sdk.google.calendar.enums.Queue;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -12,23 +11,24 @@ import java.util.logging.Logger;
 /**
  * Created by 刘春龙 on 2017/4/10.
  *
- * 单线程处理类，消费消息队列任务
+ * 线程处理类，执行任务
  */
-public class MsExecutorProcessPool {
+public class ExecutorProcessPool {
 
-    public static final Logger logger = Logger.getLogger(MsExecutorProcessPool.class.getName());
+    public static final Logger logger = Logger.getLogger(ExecutorProcessPool.class.getName());
 
-    private static MsExecutorProcessPool pool = new MsExecutorProcessPool();
+    private static ExecutorProcessPool pool = new ExecutorProcessPool();
 
     private ExecutorService executor;
-    private final String threadName = Queue.MS_QUEUE.getName() + " thread";//线程名称
+    private final int threadMax = 10;//最大线程数
+    private final String threadName = "worker thread";//线程名称
 
-    private MsExecutorProcessPool() {
-        logger.info("[Thread Pool Init] - Thread Name:" + threadName);
-        executor = ExecutorServiceFactory.getInstance().createSingleThreadExecutor(threadName);
+    private ExecutorProcessPool() {
+        logger.info("[Thread Pool Init] - MaximumPoolSize:" + threadMax);
+        executor = ExecutorServiceFactory.getInstance().createFixedThreadPool(threadMax, threadName);
     }
 
-    public static MsExecutorProcessPool getInstance() {
+    public static ExecutorProcessPool getInstance() {
         return pool;
     }
 

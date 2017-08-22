@@ -58,9 +58,9 @@ public class RedisBackupQueue extends BackupQueue {
             Transaction multi = jedis.multi();//开启事务
             if (!isExists) {//只有当前队列不存在，才执行lpush
                 multi.lpush(this.name, taskJson);
+                List<Object> results = multi.exec();
+                logger.info("线程[" + Thread.currentThread().getName() + "] - [备份队列循环标记添加]事务执行结果：" + ((results != null && results.size() > 0)? results.get(0) : "Fail"));
             }
-            List<Object> results = multi.exec();
-            logger.info("线程[" + Thread.currentThread().getName() + "] - [备份队列循环标记添加]事务执行结果：" + ((results != null && results.size() > 0)? results.get(0) : "Fail"));
         } catch (Throwable e) {
             logger.info(e.getMessage());
             e.printStackTrace();

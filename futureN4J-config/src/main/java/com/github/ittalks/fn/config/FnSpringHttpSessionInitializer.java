@@ -2,6 +2,8 @@ package com.github.ittalks.fn.config;
 
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
+import com.github.ittalks.commons.sdk.google.calendar.task.DTQueueConsumer;
+import com.github.ittalks.commons.sdk.google.calendar.task.MSQueueConsumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.EnvironmentAware;

@@ -1,4 +1,4 @@
-package com.github.ittalks.commons.redis;
+package com.github.ittalks.commons.redis.v2;
 
 import com.github.ittalks.fn.common.util.SpringAwareUtils;
 import redis.clients.jedis.Jedis;
@@ -11,9 +11,9 @@ import java.util.logging.Logger;
  * <p>
  * Redis连接池工具类
  */
-public class RedisManagerv2 {
+public class RedisManager {
 
-    public final static Logger logger = Logger.getLogger(RedisManagerv2.class.getName());
+    public final static Logger logger = Logger.getLogger(RedisManager.class.getName());
 
     private static final JedisPool jedisPool = (JedisPool) SpringAwareUtils.getBean("jedisPool");
 

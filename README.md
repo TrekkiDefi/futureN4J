@@ -54,8 +54,8 @@
 // 1.获取队列
 TaskQueue taskQueue = TaskQueueManager.getTaskQueue(TASK_QUEUE_NAME);
 //2.创建任务
-String DATA = JSON.toJSONString(OBJECT);
-Task task = new Task(taskQueue.getName(), TASK_TYPE, DATA, new Task.TaskState());
+String data = JSON.toJSONString(OBJECT);
+Task task = new Task(taskQueue.getName(), TASK_TYPE, data, new Task.TaskState());
 
 //3.将任务加入队列
 taskQueue.pushTask(task);
@@ -63,7 +63,6 @@ taskQueue.pushTask(task);
 
 2. 消费队列任务
 ```java
-
 TaskQueue taskQueue = null;
 try {
     taskQueue = TaskQueueManager.getTaskQueue(TASK_QUEUE_NAME);

@@ -23,6 +23,18 @@
             <artifactId>futureN4J-common</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+        <!-- fn commons collections -->
+        <dependency>
+            <groupId>com.github.ittalks</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <!-- fn commons sdk -->
+        <dependency>
+            <groupId>com.github.ittalks</groupId>
+            <artifactId>commons-sdk</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
 
         <!-- 基于redis的http session存储 -->
         <dependency>
