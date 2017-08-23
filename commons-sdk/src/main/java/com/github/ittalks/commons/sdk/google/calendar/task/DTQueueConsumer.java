@@ -9,7 +9,9 @@ import com.github.ittalks.commons.redis.queue.common.RetryPolicy;
 import com.github.ittalks.commons.sdk.google.calendar.enums.Queue;
 import com.github.ittalks.commons.sdk.google.calendar.task.pool.DTExecutorProcessPool;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,6 +21,8 @@ import java.util.logging.Logger;
 /**
  * Created by 刘春龙 on 2017/3/6.
  */
+@DependsOn("taskQueueManager")
+@Component
 public class DTQueueConsumer implements TaskConsumer, ApplicationListener<ContextRefreshedEvent> {
 
     public static final Logger logger = Logger.getLogger(DTQueueConsumer.class.getName());

@@ -6,11 +6,11 @@ import com.github.ittalks.commons.redis.queue.TaskHandler;
 import com.github.ittalks.commons.redis.queue.TaskQueue;
 import com.github.ittalks.commons.redis.queue.TaskQueueManager;
 import com.github.ittalks.commons.sdk.google.calendar.entity.ReceivedCalendarListEntry;
+import com.github.ittalks.commons.sdk.google.calendar.entity.SyncCalendarListEntity;
 import com.github.ittalks.commons.sdk.google.calendar.entity.SyncEventsEntity;
 import com.github.ittalks.commons.sdk.google.calendar.enums.Queue;
 import com.github.ittalks.commons.sdk.google.calendar.proxy.CalendarProxy;
 import com.github.ittalks.commons.sdk.google.calendar.task.TaskType;
-import com.github.ittalks.commons.sdk.google.calendar.entity.SyncCalendarListEntity;
 import com.github.ittalks.commons.sdk.google.client.common.Constraints;
 import com.github.ittalks.commons.sdk.google.client.extensions.jdo.JdoDataStoreFactoryProxy;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
@@ -39,8 +39,12 @@ public class SynCalendarListTaskHandler implements TaskHandler {
 
     @Override
     public void handle(String data) {
-        logger.info("执行[CalendarList同步]任务，任务数据：" + data);
+        logger.info("[" + Thread.currentThread().getName() + "]执行[CalendarList同步]任务，任务数据：" + data);
         SyncCalendarListEntity syncCalendarListEntity = JSON.parseObject(data, SyncCalendarListEntity.class);
+
+        if (syncCalendarListEntity == null) {
+            return;
+        }
 
         String userid = syncCalendarListEntity.getUserId();
 
