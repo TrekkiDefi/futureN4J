@@ -122,7 +122,7 @@ public class Task implements Serializable {
             long taskTimeMillis = ts.getTimestamp();//任务的时间戳
             long currentTimeMillis = System.currentTimeMillis();//当前时间戳
             long intervalTimeMillis = currentTimeMillis - taskTimeMillis;//任务在队列中等待的时间，单位：ms
-            if (intervalTimeMillis < (TS.TIMEOUT - TS.PROTECTED_TIME) * 1000) {
+            if (intervalTimeMillis < (TS.TIMEOUT - TS.PROTECTED_TIME)) {
                 try {
                     handleTask(clazz);
                 } catch (Throwable e) {

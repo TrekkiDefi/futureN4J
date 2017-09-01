@@ -2,6 +2,7 @@ package com.github.ittalks.commons.redis.queue;
 
 import com.alibaba.fastjson.JSON;
 import com.github.ittalks.commons.redis.queue.common.TS;
+import com.github.ittalks.commons.redis.queue.config.ConfigManager;
 import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
@@ -52,7 +53,7 @@ public class BackupQueueMonitor {
                     if (intervalTimeMillis > TS.TIMEOUT) {
                         Task originTask = JSON.parseObject(JSON.toJSONString(task), Task.class);
                         //任务超时
-                        if (ts.getRepeat() <= 3) {
+                        if (ts.getRepeat() <= ConfigManager.getQueueRepeat()) {
                             //重新放入任务队列
                             //1.更新Task状态时间戳
                             ts.setTimestamp(System.currentTimeMillis());

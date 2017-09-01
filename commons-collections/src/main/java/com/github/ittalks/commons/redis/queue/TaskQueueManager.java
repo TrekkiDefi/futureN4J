@@ -40,8 +40,8 @@ public class TaskQueueManager implements ApplicationListener<ContextRefreshedEve
 
             // 获取队列名称
             StringBuilder queueNameMulti = new StringBuilder();
-            Properties properties = ConfigManager.getRedisQueue();
-            String[] qInfos = properties.getProperty("redis.queues").trim().split(";");
+
+            String[] qInfos = ConfigManager.getQueues().trim().split(";");
             for (String qInfo : qInfos) {
                 String[] qnms = qInfo.trim().split(":");
                 String qName = qnms[0].trim();
@@ -57,8 +57,8 @@ public class TaskQueueManager implements ApplicationListener<ContextRefreshedEve
 
         logger.info("初始化任务队列...");
         boolean hasSQ = false;
-        Properties properties = ConfigManager.getRedisQueue();
-        String[] qInfos = properties.getProperty("redis.queues").trim().split(";");
+
+        String[] qInfos = ConfigManager.getQueues().trim().split(";");
         for (String qInfo : qInfos) {
             String[] qnms = qInfo.trim().split(":");
             String qName = qnms[0].trim();

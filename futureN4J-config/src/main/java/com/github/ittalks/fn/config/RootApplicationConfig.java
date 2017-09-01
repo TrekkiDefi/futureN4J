@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.EventListener;
 import java.util.Properties;
@@ -31,6 +32,7 @@ import java.util.Properties;
         "classpath:/common/druid.properties",
         "classpath:/common/mongo.properties",
         "classpath:/common/redis.properties",
+        "classpath:/common/queue.properties",
         "classpath:/third/gclient.properties",
         "classpath:/webservice/server.properties"
 }, ignoreResourceNotFound = true)
@@ -38,7 +40,8 @@ import java.util.Properties;
 @Import(value = {
         FnWebSocketConfig.class,
         FnExecutorConfigurer.class,
-        FnDataSourceConfig.class
+        FnDataSourceConfig.class,
+        FnSchedulerConfig.class
 })
 @ComponentScan(basePackages = {"com.github.ittalks"},
         excludeFilters = {@Filter(type = FilterType.ANNOTATION, value = {EnableWebMvc.class})}
@@ -54,7 +57,7 @@ public class RootApplicationConfig {
     }
 
     @Bean
-    public ConfigManager redisConfigManager() {
+    public ConfigManager queueConfigManager() throws IOException {
         Properties redisConn = new Properties();
         redisConn.setProperty("redis.pool.maxTotal", environment.getProperty("redis.pool.maxTotal"));
         redisConn.setProperty("redis.pool.maxIdle", environment.getProperty("redis.pool.maxIdle"));
@@ -64,10 +67,8 @@ public class RootApplicationConfig {
         redisConn.setProperty("redis.pool.port", environment.getProperty("redis.port"));
         redisConn.setProperty("redis.hostPort", environment.getProperty("redis.hostPort"));
 
-        Properties redisQueue = new Properties();
-        redisQueue.setProperty("redis.queues", environment.getProperty("redis.queues"));
-        redisQueue.setProperty("redis.queue.repeat", environment.getProperty("redis.queue.repeat"));
-
-        return new ConfigManager(redisConn, redisQueue);
+        String queues = environment.getProperty("redis.queues");
+        int queueRepeat = Integer.parseInt(environment.getProperty("redis.queue.repeat"));
+        return new ConfigManager(redisConn, queues, queueRepeat);
     }
 }

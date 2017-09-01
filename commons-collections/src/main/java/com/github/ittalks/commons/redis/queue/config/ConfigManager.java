@@ -1,10 +1,5 @@
 package com.github.ittalks.commons.redis.queue.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.EnvironmentAware;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
-
 import java.util.Properties;
 
 /**
@@ -13,19 +8,35 @@ import java.util.Properties;
 public class ConfigManager {
 
     private static Properties redisConn;
-    private static Properties redisQueue;
+    private static String queues;
+    private static int queueRepeat;
 
-    public ConfigManager(Properties redisConn, Properties redisQueue) {
+    /**
+     * 设置redis连接属性，redis队列
+     *
+     * @param redisConn   redis连接属性
+     * @param queues      redis队列
+     * @param queueRepeat 异常中断任务重试次数
+     */
+    public ConfigManager(Properties redisConn, String queues, int queueRepeat) {
         ConfigManager.redisConn = redisConn;
-        ConfigManager.redisQueue = redisQueue;
+        ConfigManager.queues = queues;
+        ConfigManager.queueRepeat = queueRepeat;
+    }
+
+    public static void setQueueRepeat(int queueRepeat) {
+        ConfigManager.queueRepeat = queueRepeat;
     }
 
     public static Properties getRedisConn() {
         return redisConn;
     }
 
-    public static Properties getRedisQueue() {
-        return redisQueue;
+    public static String getQueues() {
+        return queues;
     }
 
+    public static int getQueueRepeat() {
+        return queueRepeat;
+    }
 }

@@ -59,22 +59,26 @@ public class RedisManager {
 
         logger.info(String.format("poolMaxTotal: %s, poolMaxIdle: %s", poolMaxTotal, poolMaxIdle));
 
-
         String connectMode = props.getProperty("redis.connectMode");
-        String host = props.getProperty("redis.pool.host");
-        String port = props.getProperty("redis.pool.port");
-        String hostPort = props.getProperty("redis.hostPort");
-
-        logger.info(String.format("connectMode : %s, hostPort: %s.", connectMode, hostPort));
+        logger.info(String.format("connectMode : %s.", connectMode));
 
         if ("single".equals(connectMode)) {
-            //单机连接
+            //单机
+            String host = props.getProperty("redis.pool.host");
+            String port = props.getProperty("redis.pool.port");
+
+            logger.info(String.format("hostPort - %s.", host + ":" + port));
+
             pool = new JedisPool(jedisPoolConfig, host, Integer.valueOf(port));
         } else if ("sentinel".equals(connectMode)) {
+            // 集群
+            String hostPort = props.getProperty("redis.hostPort");
 
             if (StringUtils.isEmpty(hostPort)) {
                 throw new RuntimeException("redis配置文件未配置主机-端口集。");
             }
+
+            logger.info(String.format("hostPort - %s.", hostPort));
 
             //根据配置实例化jedis池
             String[] hostPortSet = hostPort.split(",");
