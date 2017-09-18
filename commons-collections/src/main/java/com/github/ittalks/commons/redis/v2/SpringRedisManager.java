@@ -11,9 +11,9 @@ import java.util.logging.Logger;
  * <p>
  * Redis连接池工具类
  */
-public class RedisManager {
+public class SpringRedisManager {
 
-    public final static Logger logger = Logger.getLogger(RedisManager.class.getName());
+    public final static Logger logger = Logger.getLogger(SpringRedisManager.class.getName());
 
     private static final JedisPool jedisPool = (JedisPool) SpringAwareUtils.getBean("jedisPool");
 

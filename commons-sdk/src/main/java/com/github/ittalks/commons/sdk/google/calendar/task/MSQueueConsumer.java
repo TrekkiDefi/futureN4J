@@ -7,8 +7,7 @@ import com.github.ittalks.commons.redis.queue.TaskQueue;
 import com.github.ittalks.commons.redis.queue.TaskQueueManager;
 import com.github.ittalks.commons.redis.queue.common.RetryPolicy;
 import com.github.ittalks.commons.sdk.google.calendar.enums.Queue;
-import com.github.ittalks.commons.sdk.google.calendar.task.pool.ExecutorProcessPool;
-import com.github.ittalks.commons.sdk.google.calendar.task.pool.MSExecutorProcessPool;
+import com.github.ittalks.commons.thread.pool.ExecutorProcessPool;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -28,12 +27,11 @@ public class MSQueueConsumer implements TaskConsumer, ApplicationListener<Contex
 
     public static final Logger logger = Logger.getLogger(MSQueueConsumer.class.getName());
 
-    private MSExecutorProcessPool msPool = MSExecutorProcessPool.getInstance();
-    private ExecutorProcessPool pool = ExecutorProcessPool.getInstance();
+    private ExecutorProcessPool msPool = ExecutorProcessPool.getInstance();
 
     @Override
     public void consume() {
-        TaskQueue taskQueue = null;
+        TaskQueue taskQueue;
 
         try {
             taskQueue = TaskQueueManager.getTaskQueue(Queue.MS_QUEUE.getName());
@@ -63,7 +61,7 @@ public class MSQueueConsumer implements TaskConsumer, ApplicationListener<Contex
                                 task.doTask(type.getTaskHandler());
                                 break;//跳出TaskHandler匹配
                             }
-                        }  catch (Throwable e) {
+                        } catch (Throwable e) {
                             logger.info(e.getMessage());
                         }
                     }

@@ -17,7 +17,6 @@ import java.util.logging.Logger;
  * <p>
  * 默认60s执行一次循环，对超时任务作处理。
  */
-@Component("backupQueueMonitor")
 public class BackupQueueMonitor {
 
     public static final Logger logger = Logger.getLogger(BackupQueueMonitor.class.getName());
