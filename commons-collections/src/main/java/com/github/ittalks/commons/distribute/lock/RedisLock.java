@@ -144,7 +144,6 @@ public class RedisLock {
         while (timeout >= 0) {
             //创建一个新锁
             final Lock tLock = new Lock(lockUUID, System.currentTimeMillis() + lockExpiryInMillis);
-
             /**
              * 将当前锁(tLock)写入Redis中
              *      如果成功写入，Redis中不存在锁，获取锁成功;
