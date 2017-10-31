@@ -94,7 +94,6 @@
         </dependency>
         <!-- logback and slf4j end -->
 
-        <!-- #################### RESTful 风格####################  -->
         <!-- rest -->
         <!-- 使用标准Jackson数据绑定来处理JAX-RS实现（如Jersey和RESTeasy）的JSON输入/输出的功能。 -->
         <dependency>
@@ -117,22 +116,28 @@
 
         <!-- cxf-webservice start -->
         <!-- CXF -->
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-core</artifactId>
-        </dependency>
+        <!-- 加入cxf-webservice依赖包 -->
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxws</artifactId>
         </dependency>
+        <!-- 该包会被自动依赖引入 -->
+        <!--
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-core</artifactId>
+        </dependency>
+        -->
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-transports-http</artifactId>
         </dependency>
+        <!-- cxf内置的服务器jetty用户测试和调试 -->
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-transports-http-jetty</artifactId>
         </dependency>
+        <!-- 加入cxf-restful依赖包 -->
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
@@ -141,16 +146,27 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-client</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-extension-providers</artifactId>
         </dependency>
+
         <!-- 添加wadl描述 -->
+        <!--
+            CXF JAX-RS支持（Web应用程序描述语言|http://www.w3.org/Submission/wadl] (WADL)）。
+            用户可以使用WADL文档生成初始代码，并根据需要自动生成WADL。
+        -->
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-service-description</artifactId>
         </dependency>
         <!-- cxf-webservice end -->
-        <!-- #################### RESTful 风格####################  -->
+
+        <!-- xml api -->
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+        </dependency>
     </dependencies>
 </project>

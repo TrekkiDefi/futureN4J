@@ -1,7 +1,7 @@
 package com.github.ittalks.fn.web.api;
 
+import com.github.ittalks.commons.example.ws.cxf.integration.model.User;
 import com.github.ittalks.commons.jackson.JsonUtils;
-import com.github.ittalks.commons.webservice.entity.User;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -81,6 +81,7 @@
         <logback.version>1.2.3</logback.version>
         <!-- cxf -->
         <cxf.version>3.2.0</cxf.version>
+        <xml.apis.version>2.0.2</xml.apis.version>
 
         <javax.inject.version>1</javax.inject.version>
         <javax.jdo.version>3.0.1</javax.jdo.version>
@@ -661,26 +662,32 @@
 
             <!-- cxf-webservice start -->
             <!-- CXF -->
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-core</artifactId>
-                <version>${cxf.version}</version>
-            </dependency>
+            <!-- 加入cxf-webservice依赖包 -->
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-frontend-jaxws</artifactId>
                 <version>${cxf.version}</version>
             </dependency>
+            <!-- 该包会被自动依赖引入 -->
+            <!--
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-core</artifactId>
+                <version>${cxf.version}</version>
+            </dependency>
+            -->
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-transports-http</artifactId>
                 <version>${cxf.version}</version>
             </dependency>
+            <!-- cxf内置的服务器jetty用户测试和调试 -->
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-transports-http-jetty</artifactId>
                 <version>${cxf.version}</version>
             </dependency>
+            <!-- 加入cxf-restful依赖包 -->
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-frontend-jaxrs</artifactId>
@@ -691,11 +698,13 @@
                 <artifactId>cxf-rt-rs-client</artifactId>
                 <version>${cxf.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-rs-extension-providers</artifactId>
                 <version>${cxf.version}</version>
             </dependency>
+
             <!-- 添加wadl描述 -->
             <dependency>
                 <groupId>org.apache.cxf</groupId>
@@ -704,6 +713,12 @@
             </dependency>
             <!-- cxf-webservice end -->
 
+            <!-- xml api -->
+            <dependency>
+                <groupId>xml-apis</groupId>
+                <artifactId>xml-apis</artifactId>
+                <version>${xml.apis.version}</version>
+            </dependency>
 
             <!-- servlet -->
             <dependency>

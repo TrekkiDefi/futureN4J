@@ -1,7 +1,7 @@
 package com.github.ittalks.fn.config;
 
 import com.github.ittalks.commons.redis.RedisManager;
-import com.github.ittalks.commons.redis.v2.SpringRedisManager;
+import com.github.ittalks.commons.redis.SpringRedisManager;
 import com.github.ittalks.commons.thread.pool.ExecutorProcessPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
-import com.github.ittalks.commons.webservice.exception.NestedException;
+import com.github.ittalks.fn.common.advice.exception.NestedException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,7 +102,7 @@ public class JsonUtils {
         try {
             return mapper.readValue(jsonString, clazz);
         } catch (IOException e) {
-            throw NestedException.wrap(e);
+            throw new NestedException(e);
         }
     }
 
@@ -127,7 +127,7 @@ public class JsonUtils {
         try {
             return (T) mapper.readValue(jsonString, javaType);
         } catch (IOException e) {
-            throw NestedException.wrap(e);
+            throw new NestedException(e);
         }
     }
 
@@ -147,7 +147,7 @@ public class JsonUtils {
         try {
             return (T) mapper.readValue(node.toString(), javaType);
         } catch (IOException e) {
-            throw NestedException.wrap(e);
+            throw new NestedException(e);
         }
     }
 
@@ -161,7 +161,7 @@ public class JsonUtils {
         try {
             return mapper.readValue(json, JsonNode.class);
         } catch (IOException e) {
-            throw NestedException.wrap(e);
+            throw new NestedException(e);
         }
     }
 
@@ -213,7 +213,7 @@ public class JsonUtils {
         try {
             return mapper.writeValueAsString(object);
         } catch (IOException e) {
-            throw NestedException.wrap(e);
+            throw new NestedException(e);
         }
     }
 

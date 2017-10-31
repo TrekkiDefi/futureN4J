@@ -1,23 +1,14 @@
 package com.github.ittalks.commons.example.ws.jax.demo3.server;
 
-import java.util.List;
+import javax.xml.ws.Endpoint;
 
 /**
  * Created by 刘春龙 on 2017/10/30.
  */
-public class _Main {
+class _Main {
 
     public static void main(String[] args) {
-        MyWebServiceImplService service = new MyWebServiceImplService();
-        MyWebServiceImpl port = service.getMyWebServiceImplPort();
-
-        User user = new User();
-        user.setName("admin");
-        user.setPassword("123");
-        List<Role> roleList = port.getRoleByUser(user);
-
-        for(Role role : roleList) {
-            System.out.println(role.getId() + "," + role.getRoleName());
-        }
+        String address = "http://127.0.0.1:6666/ws";
+        Endpoint.publish(address, new MyWebServiceImpl());
     }
 }

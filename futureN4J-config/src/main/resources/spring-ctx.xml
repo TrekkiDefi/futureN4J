@@ -14,9 +14,9 @@
     <!-- 公共配置文件-->
     <import resource="classpath:/spring-profiles.xml"/>
     <import resource="classpath:/spring-datasource.xml"/>
-    <import resource="classpath:/spring-t3.xml"/>
+    <import resource="classpath:/spring-third.xml"/>
     <import resource="classpath:/spring-redis.xml"/>
     <import resource="classpath:/spring-quartz.xml"/>
-    <import resource="classpath:/cxf-server.xml"/>
-    <import resource="classpath:/cxf-client.xml"/>
+    <import resource="classpath:/ws-cxf-server.xml"/>
+    <import resource="classpath:/ws-cxf-client.xml"/>
 </beans>
