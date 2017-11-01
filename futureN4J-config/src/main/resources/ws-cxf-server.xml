@@ -1,64 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jaxws="http://cxf.apache.org/jaxws"
        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:http-conf="http://cxf.apache.org/transports/http/configuration"
+       xmlns:http-conf="http://cxf.apache.org/transports/http/configuration" xmlns:cxf="http://cxf.apache.org/core"
+       xmlns:c="http://www.springframework.org/schema/c"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-    http://www.springframework.org/schema/context
-    http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://www.springframework.org/schema/beans/spring-beans.xsd
     http://cxf.apache.org/jaxws
     http://cxf.apache.org/schemas/jaxws.xsd
     http://cxf.apache.org/jaxrs
     http://cxf.apache.org/schemas/jaxrs.xsd
     http://cxf.apache.org/transports/http/configuration
-    http://cxf.apache.org/schemas/configuration/http-conf.xsd
-    ">
-
-    <!--
-        cxf3.x版本以后，导入如下文件会报错：cxf3.x版本，该文件不存在。
-        <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
-     -->
-    <import resource="classpath:META-INF/cxf/cxf.xml"/>
-    <!-- cxf-servlet.xml 为空配置文件，可以不导入 -->
-    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
-
-    <bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor"/>
-    <bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor"/>
+    http://cxf.apache.org/schemas/configuration/http-conf.xsd http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
 
     <!-- 超时时长 -->
     <http-conf:destination name="*.http-destination">
         <http-conf:server ReceiveTimeout="30000"/>
     </http-conf:destination>
 
+    <bean id="inMessageInterceptor"
+          class="com.github.ittalks.commons.example.ws.cxf.integration.server.interceptor.MessageInterceptor"
+          c:_0="#{T(org.apache.cxf.phase.Phase).RECEIVE}" />
+    <bean id="outMessageInterceptor"
+          class="com.github.ittalks.commons.example.ws.cxf.integration.server.interceptor.MessageInterceptor"
+          c:_0="#{T(org.apache.cxf.phase.Phase).SEND}" />
+
     <!-- ==========================  integration demo ======================== -->
-    <!--
-        <bean id="userServiceBean" class="com.github.ittalks.commons.example.ws.cxf.integration.server.ComplexUserService"/>
-    -->
-    <jaxws:server id="userServiceWsServer"
-                  serviceClass="com.github.ittalks.commons.example.ws.cxf.integration.server.ComplexUserService"
-                  address="/users">
-        <!--
-            serviceClass 属性配置即可
-            <jaxws:serviceBean>
-                <ref bean="userServiceBean"/>
-            </jaxws:serviceBean>
-        -->
+    <jaxws:server id="userServiceWsServer" address="/users">
+        <jaxws:serviceBean>
+            <ref bean="complexUserService"/>
+        </jaxws:serviceBean>
         <jaxws:inInterceptors>
-            <ref bean="loggingInInterceptor"/>
+            <ref bean="inMessageInterceptor"/>
         </jaxws:inInterceptors>
         <jaxws:outInterceptors>
-            <ref bean="loggingOutInterceptor"/>
+            <ref bean="outMessageInterceptor"/>
         </jaxws:outInterceptors>
     </jaxws:server>
 
     <!-- ==========================  restful demo ======================== -->
-    <bean id="encodingLoggingInInterceptor" class="com.github.ittalks.commons.example.ws.cxf.restful.server.EncodingLoggingInInterceptor"/>
-    <bean id="logisticsApi" class="com.github.ittalks.commons.example.ws.cxf.restful.server.LogisticsApiImpl"/>
 
-    <jaxrs:server id="restWsServer" address="/rest">
+    <jaxrs:server id="rsServer" address="/rest">
+        <jaxrs:features>
+            <cxf:logging/>
+        </jaxrs:features>
+
         <jaxrs:serviceBeans>
             <ref bean="logisticsApi" />
         </jaxrs:serviceBeans>
@@ -71,14 +58,19 @@
         </jaxrs:outInterceptors>
 
         <jaxrs:extensionMappings>
-            <!--
+            <jaxrs:extensionMappings>
                 <entry key="json" value="application/json" />
-            -->
-            <entry key="xml" value="application/xml" />
+                <entry key="xml" value="application/xml" />
+                <entry key="feed" value="application/atom+xml" />
+                <entry key="html" value="text/html" />
+            </jaxrs:extensionMappings>
         </jaxrs:extensionMappings>
-
         <jaxrs:languageMappings>
-            <entry key="en" value="en-gb"/>
+            <entry key="en" value="en-gb" />
         </jaxrs:languageMappings>
+        <jaxrs:providers>
+            <ref bean="jacksonProvider" />
+            <bean class="com.github.ittalks.commons.ws.rs.exception.RsExceptionMapper" />
+        </jaxrs:providers>
     </jaxrs:server>
 </beans>

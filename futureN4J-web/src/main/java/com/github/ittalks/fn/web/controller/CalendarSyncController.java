@@ -1,4 +1,4 @@
-package com.github.ittalks.fn.web.api;
+package com.github.ittalks.fn.web.controller;
 
 import com.github.ittalks.commons.sdk.google.calendar.service.CalendarSyncService;
 import com.github.ittalks.fn.common.result.APIResult;

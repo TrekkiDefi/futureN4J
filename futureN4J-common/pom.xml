@@ -11,5 +11,12 @@
 
     <artifactId>futureN4J-common</artifactId>
 
+    <dependencies>
+        <!-- 使用标准Jackson数据绑定来处理JAX-RS实现（如Jersey和RESTeasy）的JSON输入/输出的功能。 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

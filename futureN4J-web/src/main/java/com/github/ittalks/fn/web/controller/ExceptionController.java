@@ -1,4 +1,4 @@
-package com.github.ittalks.fn.web.api;
+package com.github.ittalks.fn.web.controller;
 
 import com.github.ittalks.fn.common.advice.exception.NestedException;
 import com.github.ittalks.fn.common.result.ErrorCode;

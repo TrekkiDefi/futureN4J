@@ -17,6 +17,5 @@
     <import resource="classpath:/spring-third.xml"/>
     <import resource="classpath:/spring-redis.xml"/>
     <import resource="classpath:/spring-quartz.xml"/>
-    <import resource="classpath:/ws-cxf-server.xml"/>
-    <import resource="classpath:/ws-cxf-client.xml"/>
+    <import resource="classpath:/ws-config.xml"/>
 </beans>

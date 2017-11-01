@@ -27,7 +27,7 @@ public class _Main {
 //        String address2 = "http://127.0.0.1:6666/ws2";
         // 创建一个服务端点
         Endpoint.publish(address, new _Main());
-//        Endpoint.publish(address2, new _Main());
+//        Endpoint.publish(address2, new _ProxyMain());
         System.out.println("访问WSDL的地址为：" + address + "?WSDL");
 //        System.out.println("访问WSDL的地址为：" + address2 + "?WSDL");
     }

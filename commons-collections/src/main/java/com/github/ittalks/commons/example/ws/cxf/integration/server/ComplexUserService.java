@@ -1,6 +1,6 @@
 package com.github.ittalks.commons.example.ws.cxf.integration.server;
 
-import com.github.ittalks.commons.example.ws.cxf.integration.model.User;
+import org.springframework.stereotype.Service;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
@@ -10,12 +10,14 @@ import java.util.UUID;
 /**
  * Created by 刘春龙 on 2017/10/31.
  */
-@WebService
-@SOAPBinding(style = SOAPBinding.Style.RPC)
+@Service
+@WebService(name = "cUSName",
+        endpointInterface = "com.github.ittalks.commons.example.ws.cxf.integration.server.IComplexUserService",
+        serviceName = "cUSServiceName")
 public class ComplexUserService implements IComplexUserService {
 
     @Override
-    public User getUserByName(@WebParam(name = "name") String name) {
+    public User getUserByName(String name) {
         User user = new User();
         user.setId(UUID.randomUUID().toString());
         user.setName(name);
@@ -26,7 +28,7 @@ public class ComplexUserService implements IComplexUserService {
 
     @Override
     public void setUser(User user) {
-        System.out.println("############Server setUser###########");
+        System.out.println("================= Server setUser =================");
         System.out.println("设置用户信息：" + user);
     }
 }

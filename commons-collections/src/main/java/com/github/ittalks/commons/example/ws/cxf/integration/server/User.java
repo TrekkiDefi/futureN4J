@@ -1,8 +1,14 @@
-package com.github.ittalks.commons.example.ws.cxf.integration.model;
+package com.github.ittalks.commons.example.ws.cxf.integration.server;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Created by 刘春龙 on 2017/10/31.
  */
+@XmlRootElement(name = "UserInfo")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class User {
 
     private String id;

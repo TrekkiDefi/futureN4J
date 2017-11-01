@@ -6,16 +6,15 @@ import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by 刘春龙 on 2017/10/31.
  */
+@Component
 public class EncodingLoggingInInterceptor extends LoggingInInterceptor {
 
-    private Logger log = LoggerFactory.getLogger(getClass());
-
     public EncodingLoggingInInterceptor() {
-        // TODO Auto-generated constructor stub
         super();
     }
 
@@ -24,12 +23,7 @@ public class EncodingLoggingInInterceptor extends LoggingInInterceptor {
      */
     @Override
     public void handleMessage(Message message) throws Fault {
-
-        // TODO Auto-generated method stub
-        String encoding = System.getProperty("file.encoding");
-        encoding = StringUtils.isEmpty(encoding) ? "UTF-8" : encoding;
-        log.debug("encoding : " + encoding);
-
+        String encoding = StringUtils.isEmpty(System.getProperty("file.encoding")) ? "UTF-8" : System.getProperty("file.encoding");
         message.put(Message.ENCODING, encoding);
         super.handleMessage(message);
     }

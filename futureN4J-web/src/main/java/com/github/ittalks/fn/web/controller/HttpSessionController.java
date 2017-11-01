@@ -1,4 +1,4 @@
-package com.github.ittalks.fn.web.api;
+package com.github.ittalks.fn.web.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

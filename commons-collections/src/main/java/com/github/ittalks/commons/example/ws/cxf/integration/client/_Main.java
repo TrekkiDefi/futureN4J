@@ -2,7 +2,7 @@ package com.github.ittalks.commons.example.ws.cxf.integration.client;
 
 import com.github.ittalks.commons.example.ws.cxf.integration.server.IComplexUserService;
 import com.github.ittalks.commons.example.ws.cxf.integration.server.ComplexUserService;
-import com.github.ittalks.commons.example.ws.cxf.integration.model.User;
+import com.github.ittalks.commons.example.ws.cxf.integration.server.User;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 
 /**
@@ -19,7 +19,7 @@ public class _Main {
         factory.setAddress("http://localhost:9090/futureN4J/ws/users");
         IComplexUserService service = (IComplexUserService) factory.create();
 
-        System.out.println("#############Client getUserByName##############");
+        System.out.println("================= Client getUserByName =================");
         User user = service.getUserByName("fnpac|凡派,");
         System.out.println("获取用户信息：" + user);
 

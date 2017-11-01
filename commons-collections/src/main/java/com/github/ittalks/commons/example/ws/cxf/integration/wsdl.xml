@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://server.integration.cxf.ws.example.commons.ittalks.github.com/" name="cUSServiceName" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://server.integration.cxf.ws.example.commons.ittalks.github.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <wsdl:types>
+        <xs:schema targetNamespace="http://server.integration.cxf.ws.example.commons.ittalks.github.com/" xmlns:tns="http://server.integration.cxf.ws.example.commons.ittalks.github.com/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <!--
+                @XmlRootElement(name = "UserInfo")
+                @XmlAccessorType(XmlAccessType.FIELD)
+            -->
+            <xs:element name="UserInfo" type="tns:user"/>
+            <xs:complexType name="user">
+                <xs:sequence>
+                    <xs:element name="id" type="xs:string" minOccurs="0"/>
+                    <xs:element name="name" type="xs:string" minOccurs="0"/>
+                    <xs:element name="address" type="xs:string" minOccurs="0"/>
+                    <xs:element name="email" type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="getUserByNameResponse">
+        <wsdl:part name="return" type="tns:user"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="setUserResponse"> </wsdl:message>
+    <wsdl:message name="setUser">
+        <wsdl:part name="arg0" type="tns:user"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getUserByName">
+        <!-- @WebParam(name = "uName") 起作用 -->
+        <wsdl:part name="uName" type="xsd:string"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="IComplexUserService">
+        <wsdl:operation name="setUser">
+            <wsdl:input name="setUser" message="tns:setUser"> </wsdl:input>
+            <wsdl:output name="setUserResponse" message="tns:setUserResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getUserByName">
+            <wsdl:input name="getUserByName" message="tns:getUserByName"> </wsdl:input>
+            <wsdl:output name="getUserByNameResponse" message="tns:getUserByNameResponse"> </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="cUSServiceNameSoapBinding" type="tns:IComplexUserService">
+        <!-- @SOAPBinding(style = SOAPBinding.Style.RPC) 起作用 -->
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc"/>
+        <wsdl:operation name="setUser">
+            <soap:operation style="rpc" soapAction=""/>
+            <wsdl:input name="setUser">
+                <soap:body use="literal" namespace="http://server.integration.cxf.ws.example.commons.ittalks.github.com/"/>
+            </wsdl:input>
+            <wsdl:output name="setUserResponse">
+                <soap:body use="literal" namespace="http://server.integration.cxf.ws.example.commons.ittalks.github.com/"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getUserByName">
+            <soap:operation style="rpc" soapAction=""/>
+            <wsdl:input name="getUserByName">
+                <soap:body use="literal" namespace="http://server.integration.cxf.ws.example.commons.ittalks.github.com/"/>
+            </wsdl:input>
+            <wsdl:output name="getUserByNameResponse">
+                <soap:body use="literal" namespace="http://server.integration.cxf.ws.example.commons.ittalks.github.com/"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <!--
+    @WebService(name = "cUSName",
+        endpointInterface = "com.github.ittalks.commons.example.ws.cxf.integration.server.IComplexUserService",
+        serviceName = "cUSServiceName")
+    -->
+    <wsdl:service name="cUSServiceName">
+        <wsdl:port name="cUSNamePort" binding="tns:cUSServiceNameSoapBinding">
+            <soap:address location="http://localhost:9090/futureN4J/ws/users"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
