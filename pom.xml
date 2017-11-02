@@ -87,6 +87,11 @@
         <javax.jdo.version>3.0.1</javax.jdo.version>
 
         <lombok.version>1.16.18</lombok.version>
+
+        <!-- activemq -->
+        <activemq.version>5.7.0</activemq.version>
+        <activemq.spring.version>5.15.2</activemq.spring.version>
+
         <!-- test -->
         <junit.version>4.12</junit.version>
     </properties>
@@ -754,6 +759,18 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
+            </dependency>
+
+            <!-- activemq -->
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>activemq-core</artifactId>
+                <version>${activemq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>activemq-spring</artifactId>
+                <version>${activemq.spring.version}</version>
             </dependency>
 
             <!-- test -->

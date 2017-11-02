@@ -1,4 +1,4 @@
-package com.github.ittalks.commons.example.proxy;
+package com.github.ittalks.commons.example.net.proxy;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.helpers.IOUtils;

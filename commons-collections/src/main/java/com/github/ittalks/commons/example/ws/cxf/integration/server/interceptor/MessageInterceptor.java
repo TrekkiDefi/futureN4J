@@ -20,7 +20,7 @@ public class MessageInterceptor extends AbstractPhaseInterceptor<Message> {
 
     @Override
     public void handleMessage(Message message) throws Fault {
-        logger.info("================= handle Message =================");
+        logger.info("================= handle Msg =================");
         logger.info(message.toString());
         if (message.getDestination() != null) {
             logger.info(message.getId() + "#" + message.getDestination().getMessageObserver());

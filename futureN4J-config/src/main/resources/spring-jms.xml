@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:amq="http://activemq.apache.org/schema/core" xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:jms="http://www.springframework.org/schema/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core-5.2.0.xsd http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd">
+    <!--
+        如果使用ActiveMQ 5.0或更早版本，则XML命名空间定义应指向http://activemq.org/config/1.0。
+        如果使用ActiveMQ 5.1或更高版本，命名空间应指向http://activemq.apache.org/schema/core。
+    -->
+
+    <!-- 连接工厂 -->
+    <!--
+    <bean id="jmsConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory"
+        p:brokerURL="tcp://127.0.0.1:61616" />
+    -->
+    <!--
+    <amq:connectionFactory id="jmsConnectionFactory" brokerURL="tcp://127.0.0.1:61616"/>
+    -->
+    <!-- a pooling based JMS provider -->
+    <bean id="jmsConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
+        <property name="connectionFactory">
+            <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+                <property name="brokerURL">
+                    <value>tcp://localhost:61616</value>
+                </property>
+                <property name="trustedPackages">
+                    <list>
+                        <value>com.github</value>
+                        <value>com.fnpac</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- 队列-->
+    <!--
+    <bean id="barrageQueue" class="org.apache.activemq.command.ActiveMQQueue"
+          c:_0="barrage.queue"/>
+    -->
+    <amq:queue id="barrageQueue" physicalName="barrage.queue"/>
+
+    <!-- 主题 -->
+    <!--
+    <bean id="barrageTopic" class="org.apache.activemq.command.ActiveMQTopic"
+          c:_0="barrage.topic"/>
+    -->
+    <amq:topic id="barrageTopic" physicalName="barrage.topic"/>
+
+    <!-- jms template -->
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate"
+          c:_0-ref="jmsConnectionFactory"/>
+
+    <!-- 消息驱动的POJO -->
+    <jms:listener-container connection-factory="jmsConnectionFactory">
+        <jms:listener destination="barrage.queue"
+                      ref="jmsDrivenConsumer" method="consume"/>
+    </jms:listener-container>
+
+    <!-- 使用基于消息的RPC -->
+    <!-- 服务端 -->
+    <bean id="alertServiceExporter" class="org.springframework.jms.remoting.JmsInvokerServiceExporter"
+          p:service-ref="alertServiceImpl"
+          p:serviceInterface="com.github.ittalks.commons.example.jms.remoting.AlertService"/>
+    <jms:listener-container connection-factory="jmsConnectionFactory">
+        <jms:listener destination="rpc.barrage.queue"
+                      ref="alertServiceExporter"/>
+    </jms:listener-container>
+    <!-- 客户端 -->
+    <bean id="alertService" class="org.springframework.jms.remoting.JmsInvokerProxyFactoryBean"
+          p:connectionFactory-ref="jmsConnectionFactory"
+          p:queueName="rpc.barrage.queue"
+          p:serviceInterface="com.github.ittalks.commons.example.jms.remoting.AlertService"/>
+</beans>
