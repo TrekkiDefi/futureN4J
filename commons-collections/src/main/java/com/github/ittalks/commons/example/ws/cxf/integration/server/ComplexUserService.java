@@ -11,9 +11,6 @@ import java.util.UUID;
  * Created by 刘春龙 on 2017/10/31.
  */
 @Service
-@WebService(name = "cUSName",
-        endpointInterface = "com.github.ittalks.commons.example.ws.cxf.integration.server.IComplexUserService",
-        serviceName = "cUSServiceName")
 public class ComplexUserService implements IComplexUserService {
 
     @Override

@@ -29,6 +29,7 @@
                     <list>
                         <value>com.github</value>
                         <value>com.fnpac</value>
+                        <value>org.springframework</value>
                     </list>
                 </property>
             </bean>

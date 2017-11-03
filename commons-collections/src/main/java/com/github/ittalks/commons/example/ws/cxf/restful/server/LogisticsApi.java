@@ -17,9 +17,7 @@ public class LogisticsApi implements ILogisticsApi {
 
     @Override
     public String doGet(String firstName, String lastName) {
-        // TODO Auto-generated method stub
         log.debug("[firstName : " + firstName + ", lastName : " + lastName + "]");
-        // to to something ...
         return "hello fnpac!~";
     }
 
@@ -27,8 +25,6 @@ public class LogisticsApi implements ILogisticsApi {
     public String itemConfirm(String xml,
                               HttpServletRequest servletRequest,
                               HttpServletResponse servletResponse) {
-        // TODO Auto-generated method stub
-        // to do something ...
         return "hello fnpac!~";
     }
 }

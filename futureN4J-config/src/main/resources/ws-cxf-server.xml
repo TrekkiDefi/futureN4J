@@ -40,7 +40,6 @@
     </jaxws:server>
 
     <!-- ==========================  restful demo ======================== -->
-
     <jaxrs:server id="rsServer" address="/rest">
         <jaxrs:features>
             <cxf:logging/>

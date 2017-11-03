@@ -7,7 +7,8 @@ import javax.jws.soap.SOAPBinding;
 /**
  * Created by 刘春龙 on 2017/10/31.
  */
-@WebService
+@WebService(name = "cUSName",
+        serviceName = "cUSServiceName")
 @SOAPBinding(style = SOAPBinding.Style.RPC)
 public interface IComplexUserService {
 

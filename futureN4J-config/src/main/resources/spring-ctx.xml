@@ -14,7 +14,7 @@
     <!-- 公共配置文件-->
     <import resource="classpath:/spring-profiles.xml"/>
     <import resource="classpath:/spring-datasource.xml"/>
-    <import resource="classpath:/spring-third.xml"/>
+    <import resource="classpath:/spring-thirdparty.xml"/>
     <import resource="classpath:/spring-redis.xml"/>
     <import resource="classpath:/spring-quartz.xml"/>
     <import resource="classpath:/ws-config.xml"/>

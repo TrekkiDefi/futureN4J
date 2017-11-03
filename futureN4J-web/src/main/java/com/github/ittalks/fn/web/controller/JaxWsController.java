@@ -20,8 +20,12 @@ public class JaxWsController {
 
     private final IComplexUserService complexUserService;
 
+    /**
+     * 基于{@code jaxws:client}，参见ws-cxf-client.xml
+     * @param complexUserService
+     */
     @Autowired
-    public JaxWsController(@Qualifier("complexUserService") IComplexUserService complexUserService) {
+    public JaxWsController(@Qualifier("userServiceWsClient") IComplexUserService complexUserService) {
         this.complexUserService = complexUserService;
     }
 
