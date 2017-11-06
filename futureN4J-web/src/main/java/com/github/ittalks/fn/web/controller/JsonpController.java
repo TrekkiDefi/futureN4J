@@ -14,23 +14,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/jsonp")
 public class JsonpController {
 
-    //method({"id":0,"name":"ittalks","email":"631521383@qq.com","address":"北京"})
+    // method({"name":"ittalks","address":"北京","email":"631521383@qq.com"})
     public static void main(String args[]) {
         User user = new User();
         user.setEmail("631521383@qq.com");
         user.setAddress("北京");
-        user.setName("ittalks");
+        user.setName("凡派,");
         System.out.println(JsonUtils.buildNonEmptyMapper().toJsonP("method", user));
     }
 
-    ///**/method({"id":0,"name":"ittalks","email":"631521383@qq.com","address":"北京"});
+    // 请求地址：http://127.0.0.1:9090/futureN4J/jsonp?callback=fnpac
+    // 相应结果：/**/fnpac({"name":"凡派,","address":"北京","email":"631521383@qq.com"});
     @RequestMapping(value = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public User jsonp() {
         User user = new User();
         user.setEmail("631521383@qq.com");
         user.setAddress("北京");
-        user.setName("ittalks");
+        user.setName("凡派,");
         return user;
     }
 }
