@@ -1,7 +1,6 @@
 package com.github.ittalks.fn.web.controller;
 
-import com.github.ittalks.commons.example.ws.cxf.integration.server.ComplexUserService;
-import com.github.ittalks.commons.example.ws.cxf.integration.server.IComplexUserService;
+import com.github.ittalks.commons.example.webservice.cxf.integration.server.IComplexUserService;
 import com.github.ittalks.fn.common.result.APIResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

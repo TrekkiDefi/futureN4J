@@ -1,6 +1,6 @@
 package com.github.ittalks.fn.web.controller;
 
-import com.github.ittalks.commons.example.ws.cxf.integration.server.User;
+import com.github.ittalks.commons.example.webservice.cxf.integration.server.User;
 import com.github.ittalks.commons.jackson.JsonUtils;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="ws.app.client" name="MyWebServiceService" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="ws.app.client" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <wsdl:types>
+        <xs:schema targetNamespace="ws.app.client" xmlns:tns="ws.app.client" version="1.0" elementFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <xs:element name="sayHello" type="tns:sayHello"/>
+            <xs:element name="sayHelloResponse" type="tns:sayHelloResponse"/>
+            <xs:complexType name="sayHello">
+                <xs:sequence>
+                    <xs:element name="name" type="xs:string" minOccurs="0"/>
+                    <xs:element name="age" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="sayHelloResponse">
+                <xs:sequence>
+                    <xs:element name="result" type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="sayHelloResponse">
+        <wsdl:part name="parameters" element="tns:sayHelloResponse"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="sayHello">
+        <wsdl:part name="parameters" element="tns:sayHello"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="WebService">
+        <wsdl:operation name="sayHello">
+            <wsdl:input name="sayHello" message="tns:sayHello"> </wsdl:input>
+            <wsdl:output name="sayHelloResponse" message="tns:sayHelloResponse"> </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="MyWebServiceServiceSoapBinding" type="tns:WebService">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="sayHello">
+            <soap:operation style="document" soapAction=""/>
+            <wsdl:input name="sayHello">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="sayHelloResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="MyWebServiceService">
+        <wsdl:port name="MyWebServicePort" binding="tns:MyWebServiceServiceSoapBinding">
+            <soap:address location="http://127.0.0.1:6666/ws"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

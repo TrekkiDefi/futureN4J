@@ -65,7 +65,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>CXFService</servlet-name>
-        <url-pattern>/ws/*</url-pattern>
+        <url-pattern>/webservice/*</url-pattern>
     </servlet-mapping>
 
     <!-- Restful -->

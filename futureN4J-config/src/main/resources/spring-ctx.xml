@@ -17,7 +17,7 @@
     <import resource="classpath:/spring-thirdparty.xml"/>
     <import resource="classpath:/spring-redis.xml"/>
     <import resource="classpath:/spring-quartz.xml"/>
-    <import resource="classpath:/ws-config.xml"/>
+    <import resource="classpath:/webservice-config.xml"/>
     <import resource="classpath:/spring-jms.xml"/>
     <import resource="classpath:/spring-amqp.xml"/>
 </beans>
