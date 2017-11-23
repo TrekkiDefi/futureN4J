@@ -57,6 +57,6 @@
            queue-names：指定队列的名称，多个用逗号分割；
      -->
     <rabbit:listener-container connection-factory="rabbitConnectionFactory" acknowledge="auto">
-        <rabbit:listener queues="rabbitQueue" ref="queueListenter"/>
+        <rabbit:listener queue-names="rabbit.queue" ref="queueListenter"/>
     </rabbit:listener-container>
 </beans>
