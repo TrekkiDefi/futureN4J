@@ -166,6 +166,19 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-oxm</artifactId>
         </dependency>
+        <!--spring security-->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+        </dependency>
 
         <!-- aop -->
         <dependency>
@@ -363,6 +376,22 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-oxm</artifactId>
                 <version>${spring.version}</version>
+            </dependency>
+            <!--spring security-->
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-core</artifactId>
+                <version>4.2.3.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-web</artifactId>
+                <version>4.2.3.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-config</artifactId>
+                <version>4.2.3.RELEASE</version>
             </dependency>
 
             <!-- spring data redis -->

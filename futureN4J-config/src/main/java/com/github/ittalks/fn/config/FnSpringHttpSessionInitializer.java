@@ -38,13 +38,13 @@ import java.util.*;
  * <p>
  * see {@link AbstractHttpSessionApplicationInitializer}
  */
-@Order(Integer.MAX_VALUE)
+@Order(100)
 public class FnSpringHttpSessionInitializer implements WebApplicationInitializer {
 
     /**
      * The default name for Spring Session's repository filter.
      */
-    public static final String DEFAULT_FILTER_NAME = "springSessionRepositoryFilter";
+    private static final String DEFAULT_FILTER_NAME = "springSessionRepositoryFilter";
 
     private static final String SERVLET_CONTEXT_PREFIX = "org.springframework.web.servlet.FrameworkServlet.CONTEXT.";
 
@@ -55,7 +55,7 @@ public class FnSpringHttpSessionInitializer implements WebApplicationInitializer
     private final Class<?>[] configurationClasses;
 
 
-    static Properties properties = new Properties();
+    private static Properties properties = new Properties();
     static {
         InputStream inputStream = FnSpringHttpSessionInitializer.class.getClassLoader().getResourceAsStream("common/druid.properties");
         try {
