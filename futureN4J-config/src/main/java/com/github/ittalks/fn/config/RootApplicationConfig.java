@@ -33,6 +33,7 @@ import java.util.Properties;
         "classpath:/common/mongo.properties",
         "classpath:/common/redis.properties",
         "classpath:/common/queue.properties",
+        "classpath:/common/rabbitmq.properties",
         "classpath:/thirdparty/gclient.properties",
         "classpath:/webservice/server.properties"
 }, ignoreResourceNotFound = true)
