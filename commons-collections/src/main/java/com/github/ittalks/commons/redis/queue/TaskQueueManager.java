@@ -29,7 +29,7 @@ public class TaskQueueManager implements ApplicationListener<ContextRefreshedEve
     public static String BACK_UP_QUEUE_BASE = "BACK_UP_QUEUE#";//备份队列名称前缀
 
     private static Map<String, Object> queueMap =
-            new ConcurrentHashMap<String, Object>();
+            new ConcurrentHashMap<>();
 
     private void initQueueMap() {
 

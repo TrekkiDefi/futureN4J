@@ -8,6 +8,7 @@ import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisSentinelPool;
 import redis.clients.util.Pool;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -80,14 +81,10 @@ public class RedisManager {
 
             logger.info(String.format("hostPort - %s.", hostPort));
 
-            //根据配置实例化jedis池
+            // 根据配置实例化jedis池
             String[] hostPortSet = hostPort.split(",");
-
-            Set<String> sentinels = new HashSet<String>();
-
-            for (String hostPortInfo : hostPortSet) {
-                sentinels.add(hostPortInfo);
-            }
+            Set<String> sentinels = new HashSet<>();
+            sentinels.addAll(Arrays.asList(hostPortSet));
             pool = new JedisSentinelPool("master", sentinels, jedisPoolConfig);
         }
     }
@@ -125,7 +122,9 @@ public class RedisManager {
      */
     public static void returnResource(Jedis jedis) {
         if (jedis != null) {
-            pool.returnResource(jedis);
+//            pool.returnResource(jedis);
+            // from Jedis 3.0
+            jedis.close();
             logger.info("归还Redis连接到连接池：" + jedis);
         }
     }

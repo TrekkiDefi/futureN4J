@@ -8,7 +8,7 @@ import java.util.List;
  *
  * 检查Java虚拟机中运行的线程
  */
-public class JvmThreadReporter {
+public class JVMThreadReporter {
 
     /**
      * API:
