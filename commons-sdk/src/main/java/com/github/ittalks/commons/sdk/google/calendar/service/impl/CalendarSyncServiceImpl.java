@@ -31,7 +31,7 @@ public class CalendarSyncServiceImpl implements CalendarSyncService {
         syncCalendarListEntity.setOnly(false);//设置不只同步日历，也同步日历下的事件
 
         String syncCalendarListData = JSON.toJSONString(syncCalendarListEntity);
-        Task task = new Task(taskQueue.getName(), TaskType.SYN_CALENDARLIST.getType(), syncCalendarListData, new Task.TaskState());
+        Task task = new Task(taskQueue.getName(), TaskType.SYN_CALENDARLIST.getType(), syncCalendarListData, new Task.TaskStatus());
 
         //3.将`同步日历消息`加入`消息队列`
         taskQueue.pushTask(task);

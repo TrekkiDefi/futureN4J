@@ -2,6 +2,7 @@ package com.github.ittalks.commons.redis.queue;
 
 import com.alibaba.fastjson.JSON;
 import com.github.ittalks.commons.redis.RedisManager;
+import com.github.ittalks.commons.redis.queue.common.Constant;
 import redis.clients.jedis.Jedis;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.logging.Logger;
  */
 public class RedisTaskQueue extends TaskQueue {
 
-    public static final Logger logger = Logger.getLogger(RedisTaskQueue.class.getName());
+    private static final Logger logger = Logger.getLogger(RedisTaskQueue.class.getName());
 
     private static final int REDIS_DB_IDX = 0;
     private final String name;
@@ -28,6 +29,9 @@ public class RedisTaskQueue extends TaskQueue {
      * @param mode 队列模式
      */
     public RedisTaskQueue(String name, String mode) {
+        if (mode == null || "".equals(mode)) {
+            mode = TaskQueueManager.DEFAULT;
+        }
         this.name = name;
         this.mode = mode;
     }
@@ -86,17 +90,32 @@ public class RedisTaskQueue extends TaskQueue {
         try {
             jedis = RedisManager.getResource(REDIS_DB_IDX);
 
-            //判断队列模式
-            if (TaskQueueManager.SAFE.equals(getMode())) {
-                //安全队列
+            // 判断队列模式
+            if (TaskQueueManager.SAFE.equals(getMode())) {// 安全队列
                 /**
-                 * 采用阻塞队列，并将当前执行的任务放入备份队列，
+                 * 1.采用阻塞队列，获取任务队列中的任务(brpop)；
+                 * 2.判断任务是否超时；
+                 * 3.更新任务的执行时间戳，放入备份队列的队首；
+                 *
                  * 任务状态不变，默认值为`normal`
                  */
-                String taskJson = jedis.brpoplpush(getName(), TaskQueueManager.BACK_UP_QUEUE, 0);
-                task = JSON.parseObject(taskJson, Task.class);
-            } else if (TaskQueueManager.SIMPLE.equals(getMode())) {
-                //简单队列
+                // 1.采用阻塞队列，获取任务队列中的任务(brpop)；
+                List<String> result = jedis.brpop(0, getName());
+                task = JSON.parseObject(result.get(1), Task.class);
+
+                // 2.判断任务是否超时；
+                Task.TaskStatus status = task.getTaskStatus();// 获取任务状态
+
+                long taskGenTimeMillis = status.getGenTimestamp();// 任务生成的时间戳
+                long currentTimeMillis = System.currentTimeMillis();// 当前时间戳
+                long intervalTimeMillis = currentTimeMillis - taskGenTimeMillis;// 任务的存活时间
+                if (intervalTimeMillis <= Constant.ALIVE_TIMEOUT) {// 如果大于存活超时时间，则不再执行
+                    // 3.更新任务的执行时间戳，放入备份队列的队首；
+                    task.getTaskStatus().setExcTimestamp(System.currentTimeMillis());// 更新任务的执行时间戳
+                    jedis.lpush(TaskQueueManager.BACK_UP_QUEUE, JSON.toJSONString(task));
+                }
+            } else if (TaskQueueManager.DEFAULT.equals(getMode())) {// 简单队列
+
                 List<String> result = jedis.brpop(0, getName());
                 String taskJson = result.get(1);
                 task = JSON.parseObject(taskJson, Task.class);
@@ -115,7 +134,7 @@ public class RedisTaskQueue extends TaskQueue {
     @Override
     protected void finishTask(Task task) {
         if (TaskQueueManager.SAFE.equals(getMode())) {
-            //安全队列，删除备份队列中的任务
+            // 安全队列，删除备份队列中的任务
             Jedis jedis = null;
             try {
                 jedis = RedisManager.getResource(REDIS_DB_IDX);

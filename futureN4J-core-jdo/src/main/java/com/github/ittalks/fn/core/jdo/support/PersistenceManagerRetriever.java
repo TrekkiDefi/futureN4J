@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 @Component
 public class PersistenceManagerRetriever extends ThreadLocal {
 
-    public static final Logger logger = Logger.getLogger(PersistenceManagerRetriever.class.getName());
+    private static final Logger logger = Logger.getLogger(PersistenceManagerRetriever.class.getName());
 
     /**
      * 代码规范：该类的功能使用必须传入`localPersistenceManagerFactoryBean`，故使用构造方法注入，并且不提供无参构造方法。

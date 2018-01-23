@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  */
 public class AuthorizationCodeFlowProxy {
 
-    public static final Logger logger = Logger.getLogger(AuthorizationCodeFlowProxy.class.getName());
+    private static final Logger logger = Logger.getLogger(AuthorizationCodeFlowProxy.class.getName());
 
     public static GoogleClientSecrets clientSecrets;
     public static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();

@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 @RequestMapping("/google/calendar/sync")
 public class CalendarSyncController {
 
-    public static final Logger logger = Logger.getLogger(CalendarSyncController.class.getName());
+    private static final Logger logger = Logger.getLogger(CalendarSyncController.class.getName());
 
     @Autowired
     private CalendarSyncService calendarService;

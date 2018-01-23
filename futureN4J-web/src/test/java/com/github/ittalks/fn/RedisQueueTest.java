@@ -19,12 +19,12 @@ public class RedisQueueTest extends FnAppTest {
     public void pushQueueTest() {
         // 1.获取队列
         TaskQueue taskQueue = TaskQueueManager.getTaskQueue(Queue.MS_QUEUE.getName());
-        //2.创建任务
+        // 2.创建任务
         JSONObject ob = new JSONObject();
         ob.put("data", "Syn CalendarList...");
         String data = JSON.toJSONString(ob);
-        Task task = new Task(taskQueue.getName(), TaskType.SYN_CALENDARLIST.getType(), data, new Task.TaskState());
-        //3.将任务加入队列
+        Task task = new Task(taskQueue.getName(), TaskType.SYN_CALENDARLIST.getType(), data, new Task.TaskStatus());
+        // 3.将任务加入队列
         taskQueue.pushTask(task);
     }
 }

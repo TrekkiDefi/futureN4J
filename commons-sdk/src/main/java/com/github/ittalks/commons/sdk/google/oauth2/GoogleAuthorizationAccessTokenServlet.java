@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class GoogleAuthorizationAccessTokenServlet extends AbstractAuthorizationCodeCallbackServlet {
 
-    public static final Logger logger = Logger.getLogger(GoogleAuthorizationAccessTokenServlet.class.getName());
+    private static final Logger logger = Logger.getLogger(GoogleAuthorizationAccessTokenServlet.class.getName());
 
     @Override
     protected void onSuccess(HttpServletRequest req, HttpServletResponse resp, Credential credential) throws ServletException, IOException {

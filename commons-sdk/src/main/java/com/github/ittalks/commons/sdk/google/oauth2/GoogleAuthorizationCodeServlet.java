@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  */
 public class GoogleAuthorizationCodeServlet extends AbstractAuthorizationCodeServlet {
 
-    public static final Logger logger = Logger.getLogger(GoogleAuthorizationCodeServlet.class.getName());
+    private static final Logger logger = Logger.getLogger(GoogleAuthorizationCodeServlet.class.getName());
     @Override
     protected AuthorizationCodeFlow initializeFlow() throws ServletException, IOException {
 

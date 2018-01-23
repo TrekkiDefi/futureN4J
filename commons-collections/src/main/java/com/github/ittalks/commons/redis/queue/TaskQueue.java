@@ -6,15 +6,14 @@ package com.github.ittalks.commons.redis.queue;
 public abstract class TaskQueue {
 
     /**
-     * 获取队列名<br>
-     * 同时支持多个队列，每个队列都应该有个名字。
+     * 获取队列名
      *
      * @return 队列名
      */
     public abstract String getName();
 
     /**
-     * 获取队列的模式：安全队列还是一般队列
+     * 获取队列的模式：安全队列 or 默认的普通队列
      *
      * @return 队列模式
      */
@@ -35,9 +34,9 @@ public abstract class TaskQueue {
     public abstract void pushTaskToHeader(Task task);
 
     /**
-     * 从任务队列里取任务。
+     * 从任务队列里取任务
      * <p>
-     * 任务状态不变，默认值为`normal`
+     * 任务状态state不变，默认值为`normal`
      *
      * @return 队列任务
      */

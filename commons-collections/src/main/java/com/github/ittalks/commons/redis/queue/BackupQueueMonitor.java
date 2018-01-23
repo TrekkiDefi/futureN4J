@@ -1,9 +1,8 @@
 package com.github.ittalks.commons.redis.queue;
 
 import com.alibaba.fastjson.JSON;
-import com.github.ittalks.commons.redis.queue.common.TS;
+import com.github.ittalks.commons.redis.queue.common.Constant;
 import com.github.ittalks.commons.redis.queue.config.ConfigManager;
-import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -15,11 +14,11 @@ import java.util.logging.Logger;
  * <p>
  * 备份队列监控
  * <p>
- * 默认60s执行一次循环，对超时任务作处理。
+ * 超时任务重试
  */
 public class BackupQueueMonitor {
 
-    public static final Logger logger = Logger.getLogger(BackupQueueMonitor.class.getName());
+    private static final Logger logger = Logger.getLogger(BackupQueueMonitor.class.getName());
 
 //    @Scheduled(cron = "0 0/1 * * * ?")
     public void monitor() {
@@ -28,51 +27,58 @@ public class BackupQueueMonitor {
         Task task;
 
         try {
-            backupQueue = TaskQueueManager.getBackupQueue(TaskQueueManager.BACK_UP_QUEUE);//备份队列
+            backupQueue = TaskQueueManager.getBackupQueue();// 备份队列
 
             if (backupQueue != null) {
                 DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                logger.info("备份队列[" + TaskQueueManager.BACK_UP_QUEUE + "]监控开始：" + format.format(new Date()));
+                logger.info("Backup queue[" + TaskQueueManager.BACK_UP_QUEUE + "]Monitoring begins：" + format.format(new Date()));
                 task = backupQueue.popTask();
                 while (task != null &&
                         !TaskQueueManager.BACK_UP_QUEUE.equals(task.getQueue()) &&
                         !RedisBackupQueue.MARKER.equals(task.getType())) {
                     /**
                      * 判断任务状态，分别处理
-                     * 1. 任务超时，且重复次数大于repeat指定次数，则持久化到数据库
-                     * 2. 任务超时，且重复次数小于等于repeat指定次数，则重新放入任务队列
+                     * 1. 任务执行超时，且重试次数大于等于retry指定次数，则持久化到数据库
+                     * 2. 任务执行超时，且重试次数小于retry指定次数，则重新放入任务队列
                      * 最后，如果满足以上条件，同时删除备份队列中的该任务
                      */
-                    //获取任务状态
-                    Task.TaskState ts = task.getTs();
-                    long taskTimeMillis = ts.getTimestamp();//任务的时间戳
-                    long currentTimeMillis = System.currentTimeMillis();//当前时间戳
-                    long intervalTimeMillis = currentTimeMillis - taskTimeMillis;//任务存活时间
-                    //判断任务是否超时
-                    if (intervalTimeMillis > TS.TIMEOUT) {
-                        Task originTask = JSON.parseObject(JSON.toJSONString(task), Task.class);
-                        //任务超时
-                        if (ts.getRepeat() <= ConfigManager.getQueueRepeat()) {
-                            //重新放入任务队列
-                            //1.更新Task状态时间戳
-                            ts.setTimestamp(System.currentTimeMillis());
-                            //2.更新状态标记：repeat
-                            ts.setState(TS.REPEAT);
-                            //3.更新状态reapeat+1
-                            ts.setRepeat(ts.getRepeat() + 1);
-                            task.setTs(ts);
-                            //4.放入任务队列的队首，优先处理
-                            String queueName = task.getQueue();
-                            TaskQueue taskQueue = TaskQueueManager.getTaskQueue(queueName);
-                            taskQueue.pushTaskToHeader(task);
+                    // 获取任务状态
+                    Task.TaskStatus status = task.getTaskStatus();
 
+                    long currentTimeMillis = System.currentTimeMillis();// 当前时间戳
+                    long taskGenTimeMillis = status.getGenTimestamp();// 任务生成的时间戳
+                    long intervalTimeMillis = currentTimeMillis - taskGenTimeMillis;// 任务的存活时间
+                    if (intervalTimeMillis > Constant.ALIVE_TIMEOUT) {
+
+                        // TODO 持久化到数据库
+
+                        // 删除备份队列中的该任务
+                        backupQueue.finishTask(task);
+                    }
+
+                    long taskExcTimeMillis = status.getExcTimestamp();// 任务执行的时间戳
+                    intervalTimeMillis = currentTimeMillis - taskExcTimeMillis;// 任务此次执行时间
+
+                    if (intervalTimeMillis > Constant.PROTECTED_TIMEOUT) {// 任务执行超时
+                        Task originTask = JSON.parseObject(JSON.toJSONString(task), Task.class);
+
+                        if (status.getRetry() < ConfigManager.getQueueRetry()) {
+                            // 重新放入任务队列
+                            // 更新状态标记为retry
+                            status.setState(Constant.RETRY);
+                            // 更新重试次数retry + 1
+                            status.setRetry(status.getRetry() + 1);
+                            task.setTaskStatus(status);
+                            // 放入任务队列的队首，优先处理
+                            TaskQueue taskQueue = TaskQueueManager.getTaskQueue(task.getQueue());
+                            taskQueue.pushTaskToHeader(task);
                         } else {
-                            //TODO 持久化到数据库
+                            // TODO 持久化到数据库
                         }
-                        //删除备份队列中的该任务
+                        // 删除备份队列中的该任务
                         backupQueue.finishTask(originTask);
                     }
-                    //继续从备份队列中取出任务，进入下一次循环
+                    // 继续从备份队列中取出任务，进入下一次循环
                     task = backupQueue.popTask();
                 }
             }

@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 @Component
 public class MSQueueConsumer implements TaskConsumer, ApplicationListener<ContextRefreshedEvent> {
 
-    public static final Logger logger = Logger.getLogger(MSQueueConsumer.class.getName());
+    private static final Logger logger = Logger.getLogger(MSQueueConsumer.class.getName());
 
     private ExecutorProcessPool msPool = ExecutorProcessPool.getInstance();
 

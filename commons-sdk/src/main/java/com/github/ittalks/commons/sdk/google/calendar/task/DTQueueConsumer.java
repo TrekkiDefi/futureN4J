@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 @Component
 public class DTQueueConsumer implements TaskConsumer, ApplicationListener<ContextRefreshedEvent> {
 
-    public static final Logger logger = Logger.getLogger(DTQueueConsumer.class.getName());
+    private static final Logger logger = Logger.getLogger(DTQueueConsumer.class.getName());
 
     private ExecutorProcessPool dtPool = ExecutorProcessPool.getInstance();
 

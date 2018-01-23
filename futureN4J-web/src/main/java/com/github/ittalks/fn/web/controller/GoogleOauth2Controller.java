@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 @RequestMapping("/google/oauth2")
 public class GoogleOauth2Controller {
 
-    public static final Logger logger = Logger.getLogger(GoogleOauth2Controller.class.getName());
+    private static final Logger logger = Logger.getLogger(GoogleOauth2Controller.class.getName());
 
 
     @RequestMapping(value = "auth/web/{userid}", method = RequestMethod.GET)

@@ -23,7 +23,7 @@ import java.util.Random;
  */
 public class WXBizMsgCrypt {
 
-    public static final Logger logger = LoggerFactory.getLogger(WXBizMsgCrypt.class);
+    private static final Logger logger = LoggerFactory.getLogger(WXBizMsgCrypt.class);
 
     static Charset CHARSET = Charset.forName("utf-8");
 

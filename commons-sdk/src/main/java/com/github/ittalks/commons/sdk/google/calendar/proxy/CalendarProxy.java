@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class CalendarProxy {
 
-    public static final Logger logger = Logger.getLogger(CalendarProxy.class.getName());
+    private static final Logger logger = Logger.getLogger(CalendarProxy.class.getName());
 
     private static final Lock lock = new ReentrantLock();
     private static AuthorizationCodeFlow flow;

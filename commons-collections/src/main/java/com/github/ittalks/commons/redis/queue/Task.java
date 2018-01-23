@@ -1,6 +1,6 @@
 package com.github.ittalks.commons.redis.queue;
 
-import com.github.ittalks.commons.redis.queue.common.TS;
+import com.github.ittalks.commons.redis.queue.common.Constant;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -12,22 +12,41 @@ import java.util.UUID;
  */
 public class Task implements Serializable {
 
-    private String queue;//任务队列名称
-    private String id;//任务唯一标识，UUID
-    private String type;//任务类型
-    private String data;//任务数据
-    private TaskState ts;//任务状态
+    /**
+     * 任务队列名称
+     */
+    private String queue;
 
-    public Task() {
+    /**
+     * 任务唯一标识，UUID
+     */
+    private String id;
+
+    /**
+     * 任务类型
+     */
+    private String type;
+
+    /**
+     * 任务数据
+     */
+    private String data;
+
+    /**
+     * 任务状态
+     */
+    private TaskStatus status;
+
+    private Task() {
 
     }
 
-    public Task(String queue, String type, String data, TaskState ts) {
+    public Task(String queue, String type, String data, TaskStatus status) {
         this.queue = queue;
         this.id = UUID.randomUUID().toString();
         this.type = type;
         this.data = data;
-        this.ts = ts;
+        this.status = status;
     }
 
     public String getQueue() {
@@ -62,23 +81,40 @@ public class Task implements Serializable {
         this.data = data;
     }
 
-    public TaskState getTs() {
-        return ts;
+    public TaskStatus getTaskStatus() {
+        return status;
     }
 
-    public void setTs(TaskState ts) {
-        this.ts = ts;
+    public void setTaskStatus(TaskStatus status) {
+        this.status = status;
     }
 
-    public static class TaskState {
-        private String state;//任务状态
-        private long timestamp;//任务时间戳
-        private int repeat;//任务超时后当前重复执行的次数
+    public static class TaskStatus {
+        /**
+         * 任务状态state，normal or retry
+         */
+        private String state;
 
-        public TaskState() {
-            this.state = TS.NORMAL;
-            this.timestamp = System.currentTimeMillis();
-            this.repeat = 0;
+        /**
+         * 任务生成的时间戳，每次重试不会重置
+         */
+        private long genTimestamp;
+
+        /**
+         * 任务执行的时间戳，每次重试时，都会在该任务从任务队列中取出后（开始执行前）重新设置为当前时间
+         */
+        private long excTimestamp;
+
+        /**
+         * 任务超时后重试的次数
+         */
+        private int retry;
+
+        public TaskStatus() {
+            this.state = Constant.NORMAL;
+            this.genTimestamp = System.currentTimeMillis();
+            this.excTimestamp = 0;
+            this.retry = 0;
         }
 
         public String getState() {
@@ -89,53 +125,61 @@ public class Task implements Serializable {
             this.state = state;
         }
 
-        public long getTimestamp() {
-            return timestamp;
+        /**
+         * 获取任务生成的时间戳，每次重试不会重置
+         *
+         * @return 任务生成的时间戳
+         */
+        public long getGenTimestamp() {
+            return genTimestamp;
         }
 
-        public void setTimestamp(long timestamp) {
-            this.timestamp = timestamp;
+        public void setGenTimestamp(long genTimestamp) {
+            this.genTimestamp = genTimestamp;
         }
 
-        public int getRepeat() {
-            return repeat;
+        /**
+         * 获取任务执行的时间戳，每次重试时，都会在该任务从任务队列中取出后（开始执行前）重新设置为当前时间
+         *
+         * @return 任务执行的时间戳
+         */
+        public long getExcTimestamp() {
+            return excTimestamp;
         }
 
-        public void setRepeat(int repeat) {
-            this.repeat = repeat;
+        public void setExcTimestamp(long excTimestamp) {
+            this.excTimestamp = excTimestamp;
+        }
+
+        public int getRetry() {
+            return retry;
+        }
+
+        public void setRetry(int retry) {
+            this.retry = retry;
         }
     }
 
     /**
      * 执行任务
      * <p>
-     * 任务状态不变
+     * 任务状态state不变
      */
     public void doTask(Class clazz) {
-        //获取任务所属队列
-        TaskQueue taskQueue = TaskQueueManager.getTaskQueue(getQueue());
+        // 获取任务所属队列
+        TaskQueue taskQueue = TaskQueueManager.getTaskQueue(this.getQueue());
         String queueMode = taskQueue.getMode();
-        if (TaskQueueManager.SAFE.equals(queueMode)) {
-            //安全队列
-            //判断任务是否在保护期内
-            Task.TaskState ts = getTs();//获取任务状态
-            long taskTimeMillis = ts.getTimestamp();//任务的时间戳
-            long currentTimeMillis = System.currentTimeMillis();//当前时间戳
-            long intervalTimeMillis = currentTimeMillis - taskTimeMillis;//任务在队列中等待的时间，单位：ms
-            if (intervalTimeMillis < (TS.TIMEOUT - TS.PROTECTED_TIME)) {
-                try {
-                    handleTask(clazz);
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                }
-                //任务执行完成，删除备份队列的相应任务
-                taskQueue.finishTask(this);
+        if (TaskQueueManager.SAFE.equals(queueMode)) {// 安全队列
+            try {
+                handleTask(clazz);
+            } catch (Throwable e) {
+                e.printStackTrace();
             }
-        } else {
+            // 任务执行完成，删除备份队列的相应任务
+            taskQueue.finishTask(this);
+        } else {// 普通队列
             handleTask(clazz);
         }
-
-
     }
 
     /**
@@ -147,9 +191,7 @@ public class Task implements Serializable {
         try {
             TaskHandler handler = (TaskHandler) clazz.newInstance();
             handler.handle(this.data);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }

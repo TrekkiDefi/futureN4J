@@ -9,7 +9,7 @@ import java.util.logging.Logger;
  */
 public class EventTaskHandler implements TaskHandler {
 
-    public static final Logger logger = Logger.getLogger(EventTaskHandler.class.getName());
+    private static final Logger logger = Logger.getLogger(EventTaskHandler.class.getName());
 
     @Override
     public void handle(String data) {

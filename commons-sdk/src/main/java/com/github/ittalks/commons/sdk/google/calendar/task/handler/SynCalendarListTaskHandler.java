@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  */
 public class SynCalendarListTaskHandler implements TaskHandler {
 
-    public static final Logger logger = Logger.getLogger(SynCalendarListTaskHandler.class.getName());
+    private static final Logger logger = Logger.getLogger(SynCalendarListTaskHandler.class.getName());
 
     //`同步设置数据存储`中用于保存当前同步令牌的键。
     private static String SYNC_TOKEN_KEY;
@@ -134,7 +134,7 @@ public class SynCalendarListTaskHandler implements TaskHandler {
         receivedCalendarListEntry.setCalendarListEntry(calendarListEntry);
         String calendarListEntryData = JSON.toJSONString(receivedCalendarListEntry);
 
-        Task calendarListEntryTask = new Task(datTaskQueue.getName(), TaskType.CALENDARLIST.getType(), calendarListEntryData, new Task.TaskState());
+        Task calendarListEntryTask = new Task(datTaskQueue.getName(), TaskType.CALENDARLIST.getType(), calendarListEntryData, new Task.TaskStatus());
         //3.将`CalendarListEntry`放入`数据队列`
         datTaskQueue.pushTask(calendarListEntryTask);
 
@@ -171,7 +171,7 @@ public class SynCalendarListTaskHandler implements TaskHandler {
 
                 String synEventData = JSON.toJSONString(syncEventsEntity);
 
-                Task synEventTask = new Task(msTaskQueue.getName(), TaskType.SYN_EVENTS.getType(), synEventData, new Task.TaskState());
+                Task synEventTask = new Task(msTaskQueue.getName(), TaskType.SYN_EVENTS.getType(), synEventData, new Task.TaskStatus());
 
                 //3.将`同步事件消息`放入`消息队列`
                 msTaskQueue.pushTask(synEventTask);

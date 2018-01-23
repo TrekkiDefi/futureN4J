@@ -69,7 +69,7 @@ public class RootApplicationConfig {
         redisConn.setProperty("redis.hostPort", environment.getProperty("redis.hostPort"));
 
         String queues = environment.getProperty("redis.queues");
-        int queueRepeat = Integer.parseInt(environment.getProperty("redis.queue.repeat"));
-        return new ConfigManager(redisConn, queues, queueRepeat);
+        int queueRetry = Integer.parseInt(environment.getProperty("redis.queue.retry"));
+        return new ConfigManager(redisConn, queues, queueRetry);
     }
 }

@@ -8,22 +8,21 @@ package com.github.ittalks.commons.redis.queue;
 public abstract class BackupQueue {
 
     /**
-     * 获取队列名<br>
-     * 同时支持多个队列，每个队列都应该有个名字。
+     * 获取队列名
      *
      * @return 队列名
      */
     public abstract String getName();
 
     /**
-     * 从队尾取一个任务，然后在将其放入队首
+     * 从队尾取一个任务，然后再将其放入队首
      *
      * @return 任务
      */
     public abstract Task popTask();
 
     /**
-     * 备份队列的任务完成，即超时任务需要从当前备份队列中删除
+     * 备份队列的任务完成，删除备份队列中的该任务
      *
      * @param task 超时任务
      */

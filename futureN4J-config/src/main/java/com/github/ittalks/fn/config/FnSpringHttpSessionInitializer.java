@@ -50,7 +50,7 @@ public class FnSpringHttpSessionInitializer implements WebApplicationInitializer
 
 
     /**
-     * Java Config
+     * Java Constant
      */
     private final Class<?>[] configurationClasses;
 

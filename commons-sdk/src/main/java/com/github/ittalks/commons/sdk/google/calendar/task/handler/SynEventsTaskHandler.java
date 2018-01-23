@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  */
 public class SynEventsTaskHandler implements TaskHandler {
 
-    public static final Logger logger = Logger.getLogger(SynEventsTaskHandler.class.getName());
+    private static final Logger logger = Logger.getLogger(SynEventsTaskHandler.class.getName());
 
     //同步设置数据存储中用于保存当前同步令牌的键。
     private static String SYNC_TOKEN_KEY;
@@ -140,7 +140,7 @@ public class SynEventsTaskHandler implements TaskHandler {
             receivedEvent.setEvent(event);
 
             String eventData = JSON.toJSONString(receivedEvent);
-            Task task = new Task(taskQueue.getName(), TaskType.EVENT.getType(), eventData, new Task.TaskState());
+            Task task = new Task(taskQueue.getName(), TaskType.EVENT.getType(), eventData, new Task.TaskStatus());
             //3.将`事件`放入`数据队列`
             taskQueue.pushTask(task);
             logger.info(String.format("将[事件]加入[数据队列]. 队列: %s, 数据: %s", taskQueue.getName(), task.getData()));

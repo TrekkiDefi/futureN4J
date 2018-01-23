@@ -9,23 +9,23 @@ public class ConfigManager {
 
     private static Properties redisConn;
     private static String queues;
-    private static int queueRepeat;
+    private static int queueRetry;
 
     /**
      * 设置redis连接属性，redis队列
      *
      * @param redisConn   redis连接属性
      * @param queues      redis队列
-     * @param queueRepeat 异常中断任务重试次数
+     * @param queueRetry 异常中断任务重试次数
      */
-    public ConfigManager(Properties redisConn, String queues, int queueRepeat) {
+    public ConfigManager(Properties redisConn, String queues, int queueRetry) {
         ConfigManager.redisConn = redisConn;
         ConfigManager.queues = queues;
-        ConfigManager.queueRepeat = queueRepeat;
+        ConfigManager.queueRetry = queueRetry;
     }
 
-    public static void setQueueRepeat(int queueRepeat) {
-        ConfigManager.queueRepeat = queueRepeat;
+    public static void setQueueRetry(int queueRetry) {
+        ConfigManager.queueRetry = queueRetry;
     }
 
     public static Properties getRedisConn() {
@@ -36,7 +36,7 @@ public class ConfigManager {
         return queues;
     }
 
-    public static int getQueueRepeat() {
-        return queueRepeat;
+    public static int getQueueRetry() {
+        return queueRetry;
     }
 }

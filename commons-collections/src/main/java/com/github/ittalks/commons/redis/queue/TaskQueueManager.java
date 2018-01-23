@@ -1,15 +1,14 @@
 package com.github.ittalks.commons.redis.queue;
 
 import com.github.ittalks.commons.redis.queue.config.ConfigManager;
+import com.github.ittalks.fn.common.advice.exception.NestedException;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import sun.misc.BASE64Encoder;
 
 import java.security.MessageDigest;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -18,22 +17,22 @@ import java.util.logging.Logger;
  */
 @Component
 public class TaskQueueManager implements ApplicationListener<ContextRefreshedEvent> {
-    public static final Logger logger = Logger.getLogger(TaskQueueManager.class.getName());
+    private static final Logger logger = Logger.getLogger(TaskQueueManager.class.getName());
 
     /**
-     * 队列模式：SIMPLE - 简单队列，SAFE - 安全队列
+     * 队列模式：DEFAULT - 简单队列，SAFE - 安全队列
      */
-    public static final String SIMPLE = "SIMPLE";
-    public static final String SAFE = "SAFE";
+    public static final String DEFAULT = "default";
+    public static final String SAFE = "safe";
     public static String BACK_UP_QUEUE;//备份队列名称
-    public static String BACK_UP_QUEUE_BASE = "BACK_UP_QUEUE#";//备份队列名称前缀
+    public static String BACK_UP_QUEUE_BASE = "back_up_queue_";//备份队列名称前缀
 
     private static Map<String, Object> queueMap =
             new ConcurrentHashMap<>();
 
     private void initQueueMap() {
 
-        //构造`备份队列名称`
+        // 构造`备份队列名称`
         try {
             MessageDigest digest = MessageDigest.getInstance("MD5");
             BASE64Encoder base64Encoder = new BASE64Encoder();
@@ -43,8 +42,7 @@ public class TaskQueueManager implements ApplicationListener<ContextRefreshedEve
 
             String[] qInfos = ConfigManager.getQueues().trim().split(";");
             for (String qInfo : qInfos) {
-                String[] qnms = qInfo.trim().split(":");
-                String qName = qnms[0].trim();
+                String qName = qInfo.trim().split(":")[0].trim();
                 queueNameMulti.append(qName);
             }
 
@@ -56,34 +54,33 @@ public class TaskQueueManager implements ApplicationListener<ContextRefreshedEve
 
 
         logger.info("初始化任务队列...");
-        boolean hasSQ = false;
+        boolean hasSq = false;
 
         String[] qInfos = ConfigManager.getQueues().trim().split(";");
         for (String qInfo : qInfos) {
-            String[] qnms = qInfo.trim().split(":");
-            String qName = qnms[0].trim();
-            String qMode = qnms[1].trim();
+            String qName = qInfo.trim().split(":")[0].trim();
+            String qMode = qInfo.trim().split(":")[1].trim();
 
-            if (!StringUtils.isEmpty(qMode) && (qMode.equals(SIMPLE) || qMode.equals(SAFE))) {
-                if (!StringUtils.isEmpty(qName)) {
-                    if (!queueMap.containsKey(qName)) {
-                        if (qMode.equals(SAFE)) {
-                            hasSQ = true;//标记存在安全队列
-                        }
-                        queueMap.put(qName, new RedisTaskQueue(qName, qMode));
-                        logger.info("建立队列：" + qName);
-                    } else {
-                        logger.info("当前队列已存在，请勿重复创建，队列名称：" + qName);
+            if(!"".equals(qMode) && !qMode.equals(DEFAULT) && !qMode.equals(SAFE)) {
+                throw new NestedException("The current queue mode is invalid, the queue name：" + qName);
+            }
+
+            if(!"".equals(qName)) {
+                if(!queueMap.containsKey(qName)) {
+                    if (qMode.equals(SAFE)) {
+                        hasSq = true;// 标记存在安全队列
                     }
+                    queueMap.put(qName, new RedisTaskQueue(qName, qMode));
+                    logger.info("Creating a task queue：" + qName);
                 } else {
-                    logger.info("当前队列名称为空！");
+                    logger.info("The current queue already exists. Do not create the queue name repeatedly：" + qName);
                 }
             } else {
-                logger.info("当前队列模式不合法，队列名称：" + qName);
+                throw new NestedException("The current queue name is empty!");
             }
         }
         //添加备份队列
-        if (hasSQ) {
+        if (hasSq) {
             BackupQueue backupQueue = new RedisBackupQueue(BACK_UP_QUEUE);
             queueMap.put(BACK_UP_QUEUE, backupQueue);
             logger.info("初始化备份队列...");
@@ -107,11 +104,11 @@ public class TaskQueueManager implements ApplicationListener<ContextRefreshedEve
 
     /**
      * 根据名称获取备份队列
-     * @param name  队列名称
+     *
      * @return 备份队列
      */
-    public static BackupQueue getBackupQueue(String name) {
-        Object queue = queueMap.get(name);
+    public static BackupQueue getBackupQueue() {
+        Object queue = queueMap.get(BACK_UP_QUEUE);
         if (queue != null && queue instanceof BackupQueue) {
             return (BackupQueue)queue;
         }

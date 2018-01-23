@@ -95,7 +95,7 @@ public class RedisManager {
      *
      * @return Jedis对象
      */
-    public static Jedis getResource() {
+    public static synchronized Jedis getResource() {
         Jedis jedis = pool.getResource();
         logger.info("获得Redis连接：" + jedis);
         return jedis;
@@ -108,7 +108,7 @@ public class RedisManager {
      * @param db Redis数据库序号
      * @return Jedis对象
      */
-    public static Jedis getResource(int db) {
+    public static synchronized Jedis getResource(int db) {
         Jedis jedis = pool.getResource();
         jedis.select(db);
         logger.info("获得Redis连接：" + jedis);
@@ -120,7 +120,7 @@ public class RedisManager {
      *
      * @param jedis Jedis对象
      */
-    public static void returnResource(Jedis jedis) {
+    public static synchronized void returnResource(Jedis jedis) {
         if (jedis != null) {
 //            pool.returnResource(jedis);
             // from Jedis 3.0
@@ -129,7 +129,7 @@ public class RedisManager {
         }
     }
 
-    public static void destroy() throws Exception {
+    public static synchronized void destroy() throws Exception {
         pool.destroy();
     }
 }

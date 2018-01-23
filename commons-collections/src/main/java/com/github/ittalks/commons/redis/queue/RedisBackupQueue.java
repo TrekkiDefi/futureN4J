@@ -10,12 +10,12 @@ import java.util.logging.Logger;
 
 /**
  * Created by 刘春龙 on 2017/3/5.
- *
+ * <p>
  * 备份队列
  */
 public class RedisBackupQueue extends BackupQueue {
 
-    public static final Logger logger = Logger.getLogger(RedisBackupQueue.class.getName());
+    private static final Logger logger = Logger.getLogger(RedisBackupQueue.class.getName());
 
     private static final int REDIS_DB_IDX = 0;
     public static final String MARKER = "marker";
@@ -35,31 +35,29 @@ public class RedisBackupQueue extends BackupQueue {
         try {
             jedis = RedisManager.getResource(REDIS_DB_IDX);
 
-            //创建备份队列循环标记
-            Task.TaskState state = new Task.TaskState();
+            // 创建备份队列循环标记
+            Task.TaskStatus state = new Task.TaskStatus();
             Task task = new Task(this.name, RedisBackupQueue.MARKER, null, state);
 
             String taskJson = JSON.toJSONString(task);
 
-            //注意`多点问题`，防止备份队列添加多个循环标记
-            //这里使用redis的事务&乐观锁
-            jedis.watch(this.name);//监视当前队列
-            boolean isExists = jedis.exists(this.name);//查询当前队列是否存在
+            // 注意分布式问题，防止备份队列添加多个循环标记
+            // 这里使用redis的事务&乐观锁
+            jedis.watch(this.name);// 监视当前队列
+            boolean isExists = jedis.exists(this.name);// 查询当前队列是否存在
 
-            logger.info("备份队列已存在！队列名：" + this.name);
             List<String> backQueueData = jedis.lrange(this.name, 0, -1);
-            logger.info("====================================");
-            logger.info("备份队列[" + this.name + "]数据:");
-            backQueueData.forEach(entry -> {
-                logger.info(entry);
-            });
+            logger.info("========================================");
+            logger.info("Backup queue already exists! Queue name：" + this.name);
+            logger.info("Backup queue[" + this.name + "]data:");
+            backQueueData.forEach(logger::info);
             logger.info("========================================");
 
-            Transaction multi = jedis.multi();//开启事务
-            if (!isExists) {//只有当前队列不存在，才执行lpush
+            Transaction multi = jedis.multi();// 开启事务
+            if (!isExists) {// 只有当前队列不存在，才执行lpush
                 multi.lpush(this.name, taskJson);
                 List<Object> results = multi.exec();
-                logger.info("线程[" + Thread.currentThread().getName() + "] - [备份队列循环标记添加]事务执行结果：" + ((results != null && results.size() > 0)? results.get(0) : "Fail"));
+                logger.info("Thread[" + Thread.currentThread().getName() + "] - (Add backup queue loop tag) Transaction execution result：" + ((results != null && results.size() > 0) ? results.get(0) : "Fail"));
             }
         } catch (Throwable e) {
             logger.info(e.getMessage());
@@ -115,6 +113,4 @@ public class RedisBackupQueue extends BackupQueue {
             }
         }
     }
-
-
 }
