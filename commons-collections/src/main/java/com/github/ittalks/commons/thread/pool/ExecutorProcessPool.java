@@ -19,9 +19,10 @@ public class ExecutorProcessPool {
 
     private static ExecutorProcessPool pool = new ExecutorProcessPool();
 
-    private ExecutorService executor;
+    private final ExecutorService executor;
+
     private final int threadMax = 10;//最大线程数
-    private final String threadName = "worker thread";//线程名称
+    private final String threadName = "worker-thread";//线程名称
 
     private ExecutorProcessPool() {
         logger.info("[Thread Pool Init] - MaximumPoolSize:" + threadMax);
