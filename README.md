@@ -1,6 +1,6 @@
 # futureN4J
 
-[![Build Status](https://travis-ci.org/ittalks/futureN4J.svg?branch=master)](https://travis-ci.org/ittalks/futureN4J)
+[![Build Status](https://travis-ci.org/fnpac/futureN4J.svg?branch=master)](https://travis-ci.org/fnpac/futureN4J)
 
 ## 一、项目管理
 
