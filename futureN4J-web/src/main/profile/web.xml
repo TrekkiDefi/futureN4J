@@ -15,6 +15,8 @@
     </context-param>
 
     <!--
+        ContextLoaderListener 的父类 ContextLoader 读取并创建根应用上下文。
+
         如果使用"AnnotationConfigWebApplicationContext"作为根应用上下文，
         则这里指定的就不是*.xml，而是Java Config类（以",; \t\n"作为分隔符）
      -->
