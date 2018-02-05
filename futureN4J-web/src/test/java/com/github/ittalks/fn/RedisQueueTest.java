@@ -7,7 +7,7 @@ import com.github.ittalks.commons.redis.queue.TaskQueue;
 import com.github.ittalks.commons.redis.queue.TaskQueueManager;
 import com.github.ittalks.commons.sdk.google.calendar.enums.Queue;
 import com.github.ittalks.commons.sdk.google.calendar.task.TaskType;
-import com.github.ittalks.fn.utils.FnAppTest;
+import com.github.ittalks.fn.core.FnAppTest;
 import org.junit.Test;
 
 /**

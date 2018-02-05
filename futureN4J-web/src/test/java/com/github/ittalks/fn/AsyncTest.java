@@ -1,7 +1,7 @@
 package com.github.ittalks.fn;
 
 import com.github.ittalks.fn.common.task.AsyncTask;
-import com.github.ittalks.fn.utils.FnAppTest;
+import com.github.ittalks.fn.core.FnAppTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
