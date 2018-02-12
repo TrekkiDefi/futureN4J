@@ -1,4 +1,4 @@
-package com.github.ittalks.fn.config;
+package com.github.ittalks.fn.config.web;
 
 import com.github.ittalks.fn.common.converter.JacksonObjectMapper;
 import org.springframework.context.annotation.*;

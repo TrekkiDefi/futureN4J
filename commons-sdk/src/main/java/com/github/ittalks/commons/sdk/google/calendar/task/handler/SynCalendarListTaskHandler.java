@@ -1,10 +1,6 @@
 package com.github.ittalks.commons.sdk.google.calendar.task.handler;
 
 import com.alibaba.fastjson.JSON;
-import com.github.ittalks.commons.redis.queue.Task;
-import com.github.ittalks.commons.redis.queue.TaskHandler;
-import com.github.ittalks.commons.redis.queue.TaskQueue;
-import com.github.ittalks.commons.redis.queue.TaskQueueManager;
 import com.github.ittalks.commons.sdk.google.calendar.entity.ReceivedCalendarListEntry;
 import com.github.ittalks.commons.sdk.google.calendar.entity.SyncCalendarListEntity;
 import com.github.ittalks.commons.sdk.google.calendar.entity.SyncEventsEntity;
@@ -18,6 +14,13 @@ import com.google.api.client.util.store.DataStore;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
+import com.kingsoft.wps.mail.queue.KMQueueManager;
+import com.kingsoft.wps.mail.queue.Task;
+import com.kingsoft.wps.mail.queue.TaskHandler;
+import com.kingsoft.wps.mail.queue.TaskQueue;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,7 +29,7 @@ import java.util.logging.Logger;
 /**
  * Created by 刘春龙 on 2017/3/14.
  */
-public class SynCalendarListTaskHandler implements TaskHandler {
+public class SynCalendarListTaskHandler extends SpringBeanAutowiringSupport implements TaskHandler {
 
     private static final Logger logger = Logger.getLogger(SynCalendarListTaskHandler.class.getName());
 
@@ -37,8 +40,15 @@ public class SynCalendarListTaskHandler implements TaskHandler {
     private static DataStore<String> calendarListDataStore;
     private static DataStore<String> syncSettingsDataStore;
 
+    private final KMQueueManager calKMQueueManager;
+
+    @Autowired
+    public SynCalendarListTaskHandler(@Qualifier("calKMQueueManager") KMQueueManager calKMQueueManager) {
+        this.calKMQueueManager = calKMQueueManager;
+    }
+
     @Override
-    public void handle(String data) {
+    public void handle(String data, Object... params) {
         logger.info("[" + Thread.currentThread().getName() + "]执行[CalendarList同步]任务，任务数据：" + data);
         SyncCalendarListEntity syncCalendarListEntity = JSON.parseObject(data, SyncCalendarListEntity.class);
 
@@ -127,14 +137,14 @@ public class SynCalendarListTaskHandler implements TaskHandler {
          * 将接收到的`日历`放入`数据队列`
          */
         // 1.获取`数据队列`
-        TaskQueue datTaskQueue = TaskQueueManager.getTaskQueue(Queue.DT_QUEUE.getName());
+        TaskQueue datTaskQueue = calKMQueueManager.getTaskQueue(Queue.data_queue.getName());
         //2.组装`日历`
         ReceivedCalendarListEntry receivedCalendarListEntry = new ReceivedCalendarListEntry();
         receivedCalendarListEntry.setUserId(syncCalendarListEntity.getUserId());
         receivedCalendarListEntry.setCalendarListEntry(calendarListEntry);
         String calendarListEntryData = JSON.toJSONString(receivedCalendarListEntry);
 
-        Task calendarListEntryTask = new Task(datTaskQueue.getName(), TaskType.CALENDARLIST.getType(), calendarListEntryData, new Task.TaskStatus());
+        Task calendarListEntryTask = new Task(datTaskQueue.getName(), "", false, TaskType.CALENDARLIST.getType(), calendarListEntryData, new Task.TaskStatus());
         //3.将`CalendarListEntry`放入`数据队列`
         datTaskQueue.pushTask(calendarListEntryTask);
 
@@ -163,7 +173,7 @@ public class SynCalendarListTaskHandler implements TaskHandler {
                  * 向`消息队列`中加入`同步事件消息`
                  */
                 //1.获取`消息队列`
-                TaskQueue msTaskQueue = TaskQueueManager.getTaskQueue(Queue.MS_QUEUE.getName());
+                TaskQueue msTaskQueue = calKMQueueManager.getTaskQueue(Queue.msg_queue.getName());
                 //2.组装`同步事件消息`
                 SyncEventsEntity syncEventsEntity = new SyncEventsEntity();
                 syncEventsEntity.setUserId(syncCalendarListEntity.getUserId());
@@ -171,7 +181,7 @@ public class SynCalendarListTaskHandler implements TaskHandler {
 
                 String synEventData = JSON.toJSONString(syncEventsEntity);
 
-                Task synEventTask = new Task(msTaskQueue.getName(), TaskType.SYN_EVENTS.getType(), synEventData, new Task.TaskStatus());
+                Task synEventTask = new Task(msTaskQueue.getName(), "", false, TaskType.SYN_EVENTS.getType(), synEventData, new Task.TaskStatus());
 
                 //3.将`同步事件消息`放入`消息队列`
                 msTaskQueue.pushTask(synEventTask);

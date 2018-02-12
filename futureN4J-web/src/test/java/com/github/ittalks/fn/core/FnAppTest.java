@@ -1,7 +1,7 @@
 package com.github.ittalks.fn.core;
 
-import com.github.ittalks.fn.config.RootApplicationConfig;
-import com.github.ittalks.fn.config.WebApplicationConfig;
+import com.github.ittalks.fn.config.web.RootApplicationConfig;
+import com.github.ittalks.fn.config.web.WebApplicationConfig;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

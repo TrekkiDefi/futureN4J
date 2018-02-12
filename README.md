@@ -2,6 +2,14 @@
 
 [![Build Status](https://travis-ci.org/fnpac/futureN4J.svg?branch=master)](https://travis-ci.org/fnpac/futureN4J)
 
+## 版本更新
+
+- 「20180211」 调整项目代码结构
+
+    1. 将分布式队列独立出单独的项目[KMQueue](https://github.com/fnpac/KMQueue) TODO 备份队列监控
+    2. 优化基于Java Config的配置
+    3. 优化分布式会话存储配置
+
 ## 一、项目管理
 
 1. 项目管理 ：Maven
@@ -34,66 +42,16 @@
 
 使用**基于Redis的分布式队列**实现数据的拉取与处理。
 
-**_使用_**
-
 ---
 
 ### 2、Commons Collections
 
 #### #1 基于Redis的分布式队列
 
-**_设计_**
-
-![](static/基于Redis的分布式消息队列设计.png)
-
-**_使用_**
-1. 向队列中Push任务
-```java
-// 1.获取队列
-TaskQueue taskQueue = TaskQueueManager.getTaskQueue(TASK_QUEUE_NAME);
-//2.创建任务
-String data = JSON.toJSONString(OBJECT);
-Task task = new Task(taskQueue.getName(), TASK_TYPE, data, new Task.TaskState());
-
-//3.将任务加入队列
-taskQueue.pushTask(task);
-```
-
-2. 消费队列任务
-```java
-TaskQueue taskQueue = null;
-try {
-    taskQueue = TaskQueueManager.getTaskQueue(TASK_QUEUE_NAME);
-    if (taskQueue != null) {
-        while (true) {
-            final Task task = taskQueue.popTask();//阻塞方式获取任务
-
-            if (task == null) {
-                //获取队列任务失败，采取重试策略
-                RetryPolicy.tsleep();
-                continue;
-            }
-
-            if (!TASK_QUEUE_NAME.equals(task.getQueue())) {
-                continue;
-            }
-
-            try {
-                //可以根据task的type，传入相应的handler处理任务，handler要实现TaskHandler接口。
-                task.doTask(TaskHandler taskHandler);
-            }  catch (Throwable e) {
-                logger.info(e.getMessage());
-            }
-
-        }
-    }
-
-} catch (Throwable e) {
-    logger.info(e.getMessage());
-}
-```
+抽离到单独的项目[KMQueue](https://github.com/fnpac/KMQueue)，具体的设计和使用请参阅该项目[README.md](https://github.com/fnpac/KMQueue/blob/master/README.md)
 
 #### #2 基于Redis的分布式锁
+
 ```java
 GenericObjectPoolConfig poolConfig = new GenericObjectPoolConfig();
 final JedisPool pool = new JedisPool(poolConfig, host, port, timeout, password);
@@ -125,7 +83,9 @@ try {
     }
 }
 ```
+
 也可以使用Spring提供的RedisTemplate.
+
 ```java
 //获取Redis的连接
 RedisConnection redisConnection = redisTemplate.getConnectionFactory().getConnection();
@@ -162,12 +122,13 @@ try {
 ```
 
 ## 四、开发规范
+
 响应返回规范化：
 
 1. 响应成功：
 
-![](static/response.png)
+    ![](./static/response.png)
 
 2. 响应失败：
 
-![](static/response2.png)
+    ![](./static/response2.png)

@@ -26,13 +26,11 @@ import java.util.Map;
  * Created by 刘春龙 on 2017/8/9.
  */
 @Configuration
-// enable transaction management
-@EnableTransactionManagement
-// enable spring data jpa
-@EnableJpaRepositories(basePackages = "com.github.ittalks.fn.core.jpa")
+@EnableTransactionManagement // enable transaction management
+@EnableJpaRepositories(basePackages = "com.github.ittalks.fn.core.jpa") // enable spring data jpa
 public class FnDataSourceConfig implements EnvironmentAware {
 
-    Environment environment;
+    private Environment environment;
 
     @Override
     public void setEnvironment(Environment environment) {
@@ -79,10 +77,7 @@ public class FnDataSourceConfig implements EnvironmentAware {
     //===============================================
     // 阿里数据库连接池
     //===============================================
-    /**
-     * 相关监控以及监控后台，见{@link FnSpringHttpSessionInitializer#beforeSessionRepositoryFilter(ServletContext)}
-     * @return
-     */
+
     @Bean(destroyMethod = "close")
     public DataSource dataSource() {
         DruidDataSource druidDataSource = new DruidDataSource();
@@ -127,6 +122,7 @@ public class FnDataSourceConfig implements EnvironmentAware {
         jdoPersistenceManagerFactory.setJdoPropertyMap(jdoPropertyMap);
         return jdoPersistenceManagerFactory;
     }
+
     @Bean(name = "jdoTransactionManager")
     public PlatformTransactionManager jdoTransactionManager() {
         JdoTransactionManager jdoTransactionManager = new JdoTransactionManager();
@@ -151,6 +147,7 @@ public class FnDataSourceConfig implements EnvironmentAware {
         emf.setJpaVendorAdapter(jpaVendorAdapter);
         return emf;
     }
+
     @Bean
     public PlatformTransactionManager jpaTransactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();

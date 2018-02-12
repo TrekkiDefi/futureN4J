@@ -5,8 +5,8 @@ package com.github.ittalks.commons.sdk.google.calendar.enums;
  */
 public enum Queue {
 
-    MS_QUEUE("MS_QUEUE$102e5239-d499-4eee-b815-50bd46f7c084"),
-    DT_QUEUE("DT_QUEUE$102e5239-d499-4eee-b815-50bd46f7c084");
+    msg_queue("cal_msg_queue"),
+    data_queue("cal_data_queue");
 
     Queue(String name) {
         this.name = name;

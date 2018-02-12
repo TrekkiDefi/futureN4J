@@ -1,16 +1,12 @@
 package com.github.ittalks.commons.sdk.google.calendar.task.handler;
 
 import com.alibaba.fastjson.JSON;
-import com.github.ittalks.commons.redis.queue.Task;
-import com.github.ittalks.commons.redis.queue.TaskHandler;
-import com.github.ittalks.commons.redis.queue.TaskQueue;
-import com.github.ittalks.commons.redis.queue.TaskQueueManager;
 import com.github.ittalks.commons.sdk.google.calendar.entity.ReceivedEvent;
 import com.github.ittalks.commons.sdk.google.calendar.entity.SyncEventsEntity;
 import com.github.ittalks.commons.sdk.google.calendar.enums.Queue;
 import com.github.ittalks.commons.sdk.google.calendar.proxy.CalendarProxy;
-import com.github.ittalks.commons.sdk.google.calendar.utils.Utils;
 import com.github.ittalks.commons.sdk.google.calendar.task.TaskType;
+import com.github.ittalks.commons.sdk.google.calendar.utils.Utils;
 import com.github.ittalks.commons.sdk.google.client.common.Constraints;
 import com.github.ittalks.commons.sdk.google.client.extensions.jdo.JdoDataStoreFactoryProxy;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
@@ -19,6 +15,13 @@ import com.google.api.client.util.store.DataStore;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
+import com.kingsoft.wps.mail.queue.KMQueueManager;
+import com.kingsoft.wps.mail.queue.Task;
+import com.kingsoft.wps.mail.queue.TaskHandler;
+import com.kingsoft.wps.mail.queue.TaskQueue;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.io.IOException;
 import java.util.Date;
@@ -29,7 +32,7 @@ import java.util.logging.Logger;
 /**
  * Created by 刘春龙 on 2017/3/6.
  */
-public class SynEventsTaskHandler implements TaskHandler {
+public class SynEventsTaskHandler extends SpringBeanAutowiringSupport implements TaskHandler {
 
     private static final Logger logger = Logger.getLogger(SynEventsTaskHandler.class.getName());
 
@@ -40,8 +43,15 @@ public class SynEventsTaskHandler implements TaskHandler {
     private static DataStore<String> eventDataStore;
     private static DataStore<String> syncSettingsDataStore;
 
+    private final KMQueueManager calKMQueueManager;
+
+    @Autowired
+    public SynEventsTaskHandler(@Qualifier("calKMQueueManager") KMQueueManager calKMQueueManager) {
+        this.calKMQueueManager = calKMQueueManager;
+    }
+
     @Override
-    public void handle(String data) {
+    public void handle(String data, Object... params) {
         logger.info("执行[事件同步]任务，任务数据：" + data);
         SyncEventsEntity syncEventsEntity = JSON.parseObject(data, SyncEventsEntity.class);
 
@@ -50,7 +60,7 @@ public class SynEventsTaskHandler implements TaskHandler {
 
         try {
             List<String> scopes = Constraints.SCOPES;
-            SYNC_TOKEN_KEY = "syncToken#" + userid  + "#" + calendarid;
+            SYNC_TOKEN_KEY = "syncToken#" + userid + "#" + calendarid;
             logger.info("SYNC_TOKEN_KEY" + SYNC_TOKEN_KEY);
             eventDataStore = JdoDataStoreFactoryProxy.getFactory().getDataStore("EventStore");
             syncSettingsDataStore = JdoDataStoreFactoryProxy.getFactory().getDataStore("SyncSettings");
@@ -132,7 +142,7 @@ public class SynEventsTaskHandler implements TaskHandler {
             logger.info(String.format("Syncing event: ID=%s, Name=%s", event.getId(), event.getSummary()));
             //将接收到的`事件`放入`数据队列`
             //1.获取`数据队列`
-            TaskQueue taskQueue = TaskQueueManager.getTaskQueue(Queue.DT_QUEUE.getName());
+            TaskQueue taskQueue = calKMQueueManager.getTaskQueue(Queue.data_queue.getName());
             //2.组装`事件`
             ReceivedEvent receivedEvent = new ReceivedEvent();
             receivedEvent.setUserId(userid);
@@ -140,7 +150,7 @@ public class SynEventsTaskHandler implements TaskHandler {
             receivedEvent.setEvent(event);
 
             String eventData = JSON.toJSONString(receivedEvent);
-            Task task = new Task(taskQueue.getName(), TaskType.EVENT.getType(), eventData, new Task.TaskStatus());
+            Task task = new Task(taskQueue.getName(), "", false, TaskType.EVENT.getType(), eventData, new Task.TaskStatus());
             //3.将`事件`放入`数据队列`
             taskQueue.pushTask(task);
             logger.info(String.format("将[事件]加入[数据队列]. 队列: %s, 数据: %s", taskQueue.getName(), task.getData()));

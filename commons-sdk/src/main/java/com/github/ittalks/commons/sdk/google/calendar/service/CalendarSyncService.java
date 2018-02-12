@@ -1,7 +1,5 @@
 package com.github.ittalks.commons.sdk.google.calendar.service;
 
-import com.google.api.services.calendar.model.Calendar;
-
 /**
  * Created by 刘春龙 on 2017/2/20.
  */
@@ -13,5 +11,5 @@ public interface CalendarSyncService {
      *
      * @param userid 用户ID
      */
-    public void sync(String userid);
+    void sync(String userid);
 }

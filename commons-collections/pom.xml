@@ -37,6 +37,22 @@
             <artifactId>spring-data-redis</artifactId>
         </dependency>
 
+        <!--
+            KMQueue 分布式队列
+
+            see https://github.com/fnpac/KMQueue
+        -->
+        <dependency>
+            <groupId>com.kingsoft.wps.mail</groupId>
+            <artifactId>queue-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kingsoft.wps.mail</groupId>
+            <artifactId>queue-extension</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- retrofit2 -->
         <dependency>
             <groupId>com.squareup.retrofit2</groupId>
