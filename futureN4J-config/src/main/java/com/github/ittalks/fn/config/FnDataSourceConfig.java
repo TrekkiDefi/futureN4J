@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.jdo.JdoTransactionManager;
 import org.springframework.orm.jdo.LocalPersistenceManagerFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -16,7 +17,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -106,6 +106,13 @@ public class FnDataSourceConfig implements EnvironmentAware {
             e.printStackTrace();
         }
         return druidDataSource;
+    }
+
+    @Bean
+    public PlatformTransactionManager jdbcTransactionManager() {
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+        transactionManager.setDataSource(dataSource());
+        return transactionManager;
     }
 
     //===============================================
