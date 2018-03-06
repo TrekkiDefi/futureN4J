@@ -20,7 +20,7 @@ public class PersistenceManagerRetriever extends ThreadLocal {
      * @param localPersistenceManagerFactoryBean
      */
     @Autowired
-    public PersistenceManagerRetriever(@Qualifier("pmf") LocalPersistenceManagerFactoryBean localPersistenceManagerFactoryBean) {
+    public PersistenceManagerRetriever(@Qualifier("jdoPersistenceManagerFactory") LocalPersistenceManagerFactoryBean localPersistenceManagerFactoryBean) {
         this.localPersistenceManagerFactoryBean = localPersistenceManagerFactoryBean;
         logger.info(this.localPersistenceManagerFactoryBean.getObject().toString());
     }
