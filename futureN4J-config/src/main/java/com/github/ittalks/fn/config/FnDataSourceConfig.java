@@ -168,7 +168,7 @@ public class FnDataSourceConfig implements EnvironmentAware {
         return jdoPersistenceManagerFactory;
     }
 
-    @Bean(name = "jdoTransactionManager")
+    @Bean
     public PlatformTransactionManager jdoTransactionManager() {
         JdoTransactionManager transactionManager = new JdoTransactionManager();
         transactionManager.setPersistenceManagerFactory(jdoPersistenceManagerFactory().getObject());
