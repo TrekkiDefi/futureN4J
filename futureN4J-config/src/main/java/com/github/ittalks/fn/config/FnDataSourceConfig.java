@@ -178,6 +178,12 @@ public class FnDataSourceConfig implements EnvironmentAware {
     //===============================================
     // JPA 自定义配置
     //===============================================
+
+    /**
+     * JPA EntityManagerFactory for persistence unit 'default'
+     *
+     * @return
+     */
     @Bean
     public LocalContainerEntityManagerFactoryBean jpaEntityManagerFactory() {
 
