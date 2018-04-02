@@ -13,7 +13,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findOne() {
         User user = new User();
-        user.setEmail("631521383@qq.com");
+        user.setEmail("631521383/2@qq.com");
         user.setAddress("北京");
         user.setName("凡派,");
         return user;
